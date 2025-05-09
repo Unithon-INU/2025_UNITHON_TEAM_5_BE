@@ -22,7 +22,7 @@ public class GeminiRestClient {
 
     private String geminiModel = "gemini-2.0-flash";
 
-    /**c
+    /**
      * 완성된 payload를 사용해 Gemini API를 호출하고, 응답 원문(String)을 반환합니다.
      * Payload는 Gemini API 명세에 맞춰 호출자가 직접 구성해야 합니다.
      */
