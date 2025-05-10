@@ -3,8 +3,11 @@ package com.curelingo.curelingo.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestTemplate;
+
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class RestClientConfig {
@@ -22,6 +25,12 @@ public class RestClientConfig {
 
     @Bean
     public RestTemplate restTemplate() {
-        return new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate();
+
+        restTemplate.getMessageConverters().removeIf(c -> c instanceof StringHttpMessageConverter);
+        restTemplate.getMessageConverters().add(0,
+                new StringHttpMessageConverter(StandardCharsets.UTF_8));
+
+        return restTemplate;
     }
 }
