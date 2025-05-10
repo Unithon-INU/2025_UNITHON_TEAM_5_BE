@@ -36,6 +36,7 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
 	implementation 'me.paulschwarz:spring-dotenv:4.0.0'
 	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml' // XML 파싱용
+	implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.3'
 }
 
 tasks.named('test') {
