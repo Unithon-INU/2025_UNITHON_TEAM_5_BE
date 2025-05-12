@@ -35,7 +35,9 @@ public class GeminiEmergencyAdvisorPromptBuilder {
                     h.ambulanceAvailable()
             ));
         }
-        prompt.append("\nChoose the best hospital and briefly explain why in Korean(one short sentence).");
+        prompt.append("\nChoose the best hospital and briefly explain why (one short sentence).");
+        prompt.append("\nYou should answer hospital name as  follows: \"Korean Name (English Name)\"." +
+                " and also reason in ONLY English.");
 
         return prompt.toString();
     }
