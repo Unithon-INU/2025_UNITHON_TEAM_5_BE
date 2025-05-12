@@ -21,9 +21,10 @@ public class GeminiEmergencyAdvisorService {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
-     * 응급 상황에 맞는 프롬프트를 기반으로 Gemini API에 요청을 보내고, 응답에서 추천 병원 이름을 추출하여 반환합니다.
+     * 응급 상황에 맞는 프롬프트를 기반으로 Gemini API에 요청을 보내고,
+     * 응답에서 추천 병원 이름과 사유를 추출하여 반환합니다.
      */
-    public String getRecommendedHospitalName(String prompt) {
+    public GeminiEmergencyAdvisorPromptResponse getRecommendation(String prompt) {
         Map<String, Object> payload = buildEmergencyRecommendationPayload(prompt);
         // log.info("[GeminiEmergencyAdvisorService] Built payload for Gemini emergency recommendation: {}", payload);
         String rawResponse = geminiRestClient.callGeminiApi(payload);
@@ -41,8 +42,8 @@ public class GeminiEmergencyAdvisorService {
                     .asText();
             GeminiEmergencyAdvisorPromptResponse response =
                     objectMapper.readValue(innerJson, GeminiEmergencyAdvisorPromptResponse.class);
-            // log.info("[GeminiEmergencyAdvisorService] Extracted recommended hospital: {}", response);
-            return response.recommendedHospitalName();
+            log.info("[GeminiEmergencyAdvisorService] 추천 병원: {}, 사유: {}", response.recommendedHospitalName(), response.recommendedReason());
+            return response;
         } catch (Exception e) {
             log.error("[GeminiEmergencyAdvisorService] Failed to extract/parse recommended hospital", e);
             return null;
@@ -67,10 +68,13 @@ public class GeminiEmergencyAdvisorService {
         Map<String, Object> properties = new HashMap<>();
         Map<String, String> hospitalNameSchema = new HashMap<>();
         hospitalNameSchema.put("type", "string");
+        Map<String, String> reasonSchema = new HashMap<>();
+        reasonSchema.put("type", "string");
         properties.put("recommendedHospitalName", hospitalNameSchema);
+        properties.put("recommendedReason", reasonSchema);
         responseSchema.put("properties", properties);
-        responseSchema.put("required", List.of("recommendedHospitalName"));
-        responseSchema.put("propertyOrdering", List.of("recommendedHospitalName"));
+        responseSchema.put("required", List.of("recommendedHospitalName", "recommendedReason"));
+        responseSchema.put("propertyOrdering", List.of("recommendedHospitalName", "recommendedReason"));
         Map<String, Object> generationConfig = new HashMap<>();
         generationConfig.put("responseMimeType", "application/json");
         generationConfig.put("responseSchema", responseSchema);
