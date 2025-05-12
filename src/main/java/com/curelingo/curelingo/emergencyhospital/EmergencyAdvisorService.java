@@ -22,7 +22,7 @@ public class EmergencyAdvisorService {
         log.info("[Gemini] Gemini API 응답 결과: {}", response);
         if (response == null) {
             log.warn("[Gemini] Gemini API returned null or missing recommended hospital");
-            return new EmergencyAdviceResponse("추천 결과 없음", "null");
+            return new EmergencyAdviceResponse("No recommendation available", "");
         }
         return new EmergencyAdviceResponse(response.recommendedHospitalName(), response.recommendedReason());
     }
