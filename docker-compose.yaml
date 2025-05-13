@@ -1,0 +1,15 @@
+services:
+  backend:
+    container_name: curelingo-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${PORT}:${PORT}"
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    restart: unless-stopped
