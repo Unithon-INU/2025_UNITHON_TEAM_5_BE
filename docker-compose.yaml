@@ -13,3 +13,22 @@ services:
     volumes:
       - .:/app
     restart: unless-stopped
+    networks:
+      - curelingo-network
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: curelingo-nginx
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - curelingo-network
+
+networks:
+  curelingo-network:
+    driver: bridge
