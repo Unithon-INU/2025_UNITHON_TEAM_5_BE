@@ -183,3 +183,5 @@ Temporary Items
 # Environment
 .env
 
+# Certbot
+certbot
