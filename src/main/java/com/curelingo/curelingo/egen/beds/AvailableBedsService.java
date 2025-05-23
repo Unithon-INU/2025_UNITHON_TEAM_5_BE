@@ -1,4 +1,4 @@
-package com.curelingo.curelingo.egen;
+package com.curelingo.curelingo.egen.beds;
 
 import com.curelingo.curelingo.egen.model.EgenResponse;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -6,12 +6,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 @Service
-public class EgenService {
+public class AvailableBedsService {
 
     @Value("${egen.api.base-url}")
     private String baseUrl;
@@ -24,11 +25,11 @@ public class EgenService {
 
     private final RestTemplate restTemplate;
 
-    public EgenService(RestTemplate restTemplate) {
+    public AvailableBedsService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    public EgenResponse fetchEgenData(String stage1, String stage2) {
+    public EgenResponse<AvailableBedsItem> fetchAvailableBeds(String stage1, String stage2) {
         try {
             String url = String.format("%s%s?serviceKey=%s&STAGE1=%s&STAGE2=%s&pageNo=1&numOfRows=10&_type=xml",
                     baseUrl, usefulSckbdPath, apiKey,
