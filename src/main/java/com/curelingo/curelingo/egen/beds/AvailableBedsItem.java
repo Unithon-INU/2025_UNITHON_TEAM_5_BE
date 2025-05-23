@@ -1,4 +1,4 @@
-package com.curelingo.curelingo.egen.model;
+package com.curelingo.curelingo.egen.beds;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Item {
+public class AvailableBedsItem {
     @JacksonXmlProperty(localName = "dutyName")
     private String dutyName;
 

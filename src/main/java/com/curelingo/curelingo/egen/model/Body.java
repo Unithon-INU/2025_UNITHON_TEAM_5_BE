@@ -7,11 +7,11 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import java.util.List;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class Body {
+public class Body<T> {
 
     @JacksonXmlElementWrapper(localName = "items")
     @JacksonXmlProperty(localName = "item")
-    public List<Item> items;
+    public List<T> items;
 
     @JacksonXmlProperty(localName = "numOfRows")
     public int numOfRows;
