@@ -10,8 +10,4 @@ public class EgenBody<T> {
     private int numOfRows;
     private int pageNo;
     private int totalCount;
-
-    public List<T> getItems() {
-        return items != null ? items.getItem() : List.of();
-    }
 }
