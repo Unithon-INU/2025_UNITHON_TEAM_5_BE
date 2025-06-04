@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Tag(name = "응급의료정보 API", description = "응급 병원 위치/정보/병상 데이터를 제공합니다.")
+@Tag(name = "Egen API", description = "Egen API 데이터를 제공합니다.")
 public interface EgenSwagger {
 
     @Operation(summary = "응급의료기관 위치정보 조회", description = "응급의료기관 위치정보를 경도/위도별 반경내 정보를 조회할 수 있다.")
