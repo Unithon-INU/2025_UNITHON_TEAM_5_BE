@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/emergency-hospitals")
+@RequestMapping("/api/emergency")
 @RequiredArgsConstructor
-public class EmergencyAdvisorController {
+public class EmergencyAdvisorController implements EmergencyAdvisorSwagger {
 
     private final EmergencyAdvisorService emergencyAdvisorService;
 
