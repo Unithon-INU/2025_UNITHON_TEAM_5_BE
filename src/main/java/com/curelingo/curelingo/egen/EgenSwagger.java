@@ -29,6 +29,12 @@ public interface EgenSwagger {
             @Parameter(description = "주소(시군구)", example = "강남구") @RequestParam String stage2
     );
 
+    @Operation(summary = "병/의원 위치정보 조회", description = "병/의원 위치정보를 경도/위도별 반경내 정보를 조회할 수 있다.")
+    EgenResponse<NearbyHospitalItem> getNearbyClinics(
+            @Parameter(description = "위도", example = "37.64207169115689") @RequestParam double lat,
+            @Parameter(description = "경도", example = "126.83145733035825") @RequestParam double lon
+    );
+
     @Operation(summary = "병/의원별 기본정보 조회", description = "병/의원별 상세정보를 조회할 수 있다.")
     EgenResponse<HospitalInfoItem> getClinicInfo(
             @Parameter(description = "기관코드", example = "A1100026") @RequestParam String hpid

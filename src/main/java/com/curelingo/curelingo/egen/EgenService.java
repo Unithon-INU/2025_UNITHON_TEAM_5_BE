@@ -51,6 +51,15 @@ public class EgenService {
         return callEgenApi(url, AvailableBedsItem.class);
     }
 
+    public EgenResponse<NearbyHospitalItem> getNearbyClinics(double lat, double lon) {
+        String url = String.format("%s/HsptlAsembySearchService/getHsptlMdcncLcinfoInqire?serviceKey=%s&WGS84_LAT=%s&WGS84_LON=%s&pageNo=1&numOfRows=10&_type=json",
+                baseUrl, apiKey,
+                URLEncoder.encode(String.valueOf(lat), StandardCharsets.UTF_8),
+                URLEncoder.encode(String.valueOf(lon), StandardCharsets.UTF_8)
+        );
+        return callEgenApi(url, NearbyHospitalItem.class);
+    }
+
     private <T> EgenResponse<T> callEgenApi(String url, Class<T> itemClass) {
         try {
             URI uri = new URI(url);
