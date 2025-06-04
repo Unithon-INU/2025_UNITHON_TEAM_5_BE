@@ -31,4 +31,9 @@ public class EgenController implements EgenSwagger {
     ) {
         return egenService.getAvailableBeds(stage1, stage2);
     }
+
+    @GetMapping("/clinic/info")
+    public EgenResponse<HospitalInfoItem> getClinicInfo(@RequestParam String hpid) {
+        return egenService.getHospitalInfo(hpid);
+    }
 }
