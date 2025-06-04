@@ -51,6 +51,25 @@ public class EgenService {
         return callEgenApi(url, AvailableBedsItem.class);
     }
 
+    public EgenResponse<ClinicItem> getClinics(
+            String Q0, String Q1, String QZ, String QD, String QT, String QN, String ORD, Integer pageNo, Integer numOfRows
+    ) {
+        StringBuilder url = new StringBuilder(baseUrl + "/HsptlAsembySearchService/getHsptlMdcncListInfoInqire?serviceKey=" + apiKey);
+
+        if (Q0 != null) url.append("&Q0=").append(URLEncoder.encode(Q0, StandardCharsets.UTF_8));
+        if (Q1 != null) url.append("&Q1=").append(URLEncoder.encode(Q1, StandardCharsets.UTF_8));
+        if (QZ != null) url.append("&QZ=").append(QZ);
+        if (QD != null) url.append("&QD=").append(QD);
+        if (QT != null) url.append("&QT=").append(QT);
+        if (QN != null) url.append("&QN=").append(URLEncoder.encode(QN, StandardCharsets.UTF_8));
+        if (ORD != null) url.append("&ORD=").append(ORD);
+        if (pageNo != null) url.append("&pageNo=").append(pageNo);
+        if (numOfRows != null) url.append("&numOfRows=").append(numOfRows);
+        url.append("&_type=json");
+
+        return callEgenApi(url.toString(), ClinicItem.class);
+    }
+
     public EgenResponse<NearbyHospitalItem> getNearbyClinics(double lat, double lon) {
         String url = String.format("%s/HsptlAsembySearchService/getHsptlMdcncLcinfoInqire?serviceKey=%s&WGS84_LAT=%s&WGS84_LON=%s&pageNo=1&numOfRows=10&_type=json",
                 baseUrl, apiKey,

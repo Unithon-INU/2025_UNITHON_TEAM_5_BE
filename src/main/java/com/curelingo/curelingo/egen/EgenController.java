@@ -1,9 +1,6 @@
 package com.curelingo.curelingo.egen;
 
-import com.curelingo.curelingo.egen.dto.EgenResponse;
-import com.curelingo.curelingo.egen.dto.NearbyHospitalItem;
-import com.curelingo.curelingo.egen.dto.HospitalInfoItem;
-import com.curelingo.curelingo.egen.dto.AvailableBedsItem;
+import com.curelingo.curelingo.egen.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +27,21 @@ public class EgenController implements EgenSwagger {
             @RequestParam String stage2
     ) {
         return egenService.getAvailableBeds(stage1, stage2);
+    }
+
+    @GetMapping("/clinics")
+    public EgenResponse<ClinicItem> getClinics(
+            @RequestParam(required = false) String Q0,
+            @RequestParam(required = false) String Q1,
+            @RequestParam(required = false) String QZ,
+            @RequestParam(required = false) String QD,
+            @RequestParam(required = false) String QT,
+            @RequestParam(required = false) String QN,
+            @RequestParam(required = false) String ORD,
+            @RequestParam(required = false) Integer pageNo,
+            @RequestParam(required = false) Integer numOfRows
+    ) {
+        return egenService.getClinics(Q0, Q1, QZ, QD, QT, QN, ORD, pageNo, numOfRows);
     }
 
     @GetMapping("/clinic/info")
