@@ -14,17 +14,17 @@ public class EgenController implements EgenSwagger {
 
     private final EgenService egenService;
 
-    @GetMapping("/nearby")
+    @GetMapping("/emergency/nearby")
     public EgenResponse<NearbyHospitalItem> getNearbyHospitals(@RequestParam double lat, @RequestParam double lon) {
         return egenService.getNearbyHospitals(lat, lon);
     }
 
-    @GetMapping("/info")
+    @GetMapping("/emergency/info")
     public EgenResponse<HospitalInfoItem> getHospitalInfo(@RequestParam String hpid) {
         return egenService.getHospitalInfo(hpid);
     }
 
-    @GetMapping("/beds")
+    @GetMapping("/emergency/beds")
     public EgenResponse<AvailableBedsItem> getAvailableBeds(
             @RequestParam String stage1,
             @RequestParam String stage2
