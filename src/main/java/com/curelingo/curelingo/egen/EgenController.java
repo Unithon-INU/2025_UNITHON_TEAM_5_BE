@@ -46,7 +46,7 @@ public class EgenController implements EgenSwagger {
 
     @GetMapping("/clinic/info")
     public EgenResponse<HospitalInfoItem> getClinicInfo(@RequestParam String hpid) {
-        return egenService.getHospitalInfo(hpid);
+        return egenService.getClinicInfo(hpid);
     }
 
     @GetMapping("/clinic/nearby")

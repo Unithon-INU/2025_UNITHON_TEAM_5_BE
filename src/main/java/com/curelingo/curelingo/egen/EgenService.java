@@ -79,6 +79,14 @@ public class EgenService {
         return callEgenApi(url, NearbyHospitalItem.class);
     }
 
+    public EgenResponse<HospitalInfoItem> getClinicInfo(String hpid) {
+        String url = String.format("%s/HsptlAsembySearchService/getHsptlBassInfoInqire?serviceKey=%s&HPID=%s&pageNo=1&numOfRows=10&_type=json",
+                baseUrl, apiKey,
+                URLEncoder.encode(hpid, StandardCharsets.UTF_8)
+        );
+        return callEgenApi(url, HospitalInfoItem.class);
+    }
+
     private <T> EgenResponse<T> callEgenApi(String url, Class<T> itemClass) {
         try {
             URI uri = new URI(url);
