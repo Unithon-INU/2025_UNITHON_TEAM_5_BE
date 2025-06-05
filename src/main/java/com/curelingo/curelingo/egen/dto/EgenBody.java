@@ -1,11 +1,11 @@
 package com.curelingo.curelingo.egen.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 public class EgenBody<T> {
+    @JsonDeserialize(using = ItemsWrapperDeserializer.class)
     private ItemsWrapper<T> items;
     private int numOfRows;
     private int pageNo;
