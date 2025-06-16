@@ -37,6 +37,7 @@ dependencies {
 	implementation 'me.paulschwarz:spring-dotenv:4.0.0'
 	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml' // XML 파싱용
 	implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.3'
+	implementation 'com.uber:h3:4.0.0'
 }
 
 tasks.named('test') {
