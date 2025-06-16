@@ -2,17 +2,28 @@ package com.curelingo.curelingo.emergencyhospital;
 
 import com.curelingo.curelingo.emergencyhospital.dto.EmergencyAdviceRequest;
 import com.curelingo.curelingo.emergencyhospital.dto.EmergencyAdviceResponse;
+import com.curelingo.curelingo.emergencyhospital.dto.NearbyHospitalDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
-@Tag(name = "응급상황 병원 추천 API", description = "응급상황에 따른 적절한 병원을 추천해주는 서비스를 제공합니다.")
+import java.util.List;
+
+@Tag(name = "응급의료기관 API", description = "응급상황 병원 추천 및 인근 응급실 조회 서비스를 제공합니다.")
 public interface EmergencyAdvisorSwagger {
 
     @Operation(summary = "응급상황 병원 추천", description = "환자의 증상과 위치 정보를 바탕으로 가장 적합한 응급 병원을 추천합니다.")
     ResponseEntity<EmergencyAdviceResponse> recommend(
             @Parameter(description = "응급상황 정보 요청") @RequestBody EmergencyAdviceRequest request
     );
-} 
+
+    @Operation(summary = "인근 응급실 정보 조회", description = "현재 위치를 기준으로 반경 N km 이내의 응급실 목록을 조회합니다.")
+    ResponseEntity<List<NearbyHospitalDto>> getNearbyHospitals(
+            @Parameter(description = "현재 위도", example = "37.5154") @RequestParam double lat,
+            @Parameter(description = "현재 경도", example = "127.0346") @RequestParam double lng,
+            @Parameter(description = "검색 반경(km)", example = "5.0") @RequestParam double radiusKm
+    );
+}
