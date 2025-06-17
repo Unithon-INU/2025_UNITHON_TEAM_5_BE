@@ -49,6 +49,11 @@ public class EgenController implements EgenSwagger {
         return egenService.getClinicInfo(hpid);
     }
 
+    @GetMapping("/clinic/fulldata")
+    public EgenResponse<HospitalInfoItem> getFullData() {
+        return egenService.getFullData();
+    }
+
     @GetMapping("/clinic/nearby")
     public EgenResponse<NearbyHospitalItem> getNearbyClinics(@RequestParam double lat, @RequestParam double lon) {
         return egenService.getNearbyClinics(lat, lon);

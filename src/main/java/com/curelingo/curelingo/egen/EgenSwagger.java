@@ -37,6 +37,9 @@ public interface EgenSwagger {
             @Parameter(description = "기관코드", example = "A1100026") @RequestParam String hpid
     );
 
+    @Operation(summary = "병/의원 FullData 내려받기", description = "진료요일 등의 전체 병의원 정보를 조회하는 병/의원 FullData를 내려받을 수 있다.")
+    EgenResponse<HospitalInfoItem> getFullData();
+
     @Operation(summary = "병/의원 목록정보 조회", description = "병/의원 정보를 시도/시군구/진료요일/기관별/진료과목별로 조회할 수 있다.")
     EgenResponse<ClinicItem> getClinics(
             @Parameter(description = "주소(시도)", example = "서울특별시") @RequestParam(required = false) String Q0,
