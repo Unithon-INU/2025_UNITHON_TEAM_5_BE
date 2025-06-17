@@ -12,21 +12,32 @@ public class EgenController implements EgenSwagger {
     private final EgenService egenService;
 
     @GetMapping("/emergency/nearby")
-    public EgenResponse<NearbyHospitalItem> getNearbyHospitals(@RequestParam double lat, @RequestParam double lon) {
-        return egenService.getNearbyHospitals(lat, lon);
+    public EgenResponse<NearbyHospitalItem> getNearbyHospitals(
+            @RequestParam double lat,
+            @RequestParam double lon,
+            @RequestParam(required = false) Integer pageNo,
+            @RequestParam(required = false) Integer numOfRows
+    ) {
+        return egenService.getNearbyHospitals(lat, lon, pageNo, numOfRows);
     }
 
     @GetMapping("/emergency/info")
-    public EgenResponse<HospitalInfoItem> getHospitalInfo(@RequestParam String hpid) {
-        return egenService.getHospitalInfo(hpid);
+    public EgenResponse<HospitalInfoItem> getHospitalInfo(
+            @RequestParam String hpid,
+            @RequestParam(required = false) Integer pageNo,
+            @RequestParam(required = false) Integer numOfRows
+    ) {
+        return egenService.getHospitalInfo(hpid, pageNo, numOfRows);
     }
 
     @GetMapping("/emergency/beds")
     public EgenResponse<AvailableBedsItem> getAvailableBeds(
             @RequestParam String stage1,
-            @RequestParam String stage2
+            @RequestParam String stage2,
+            @RequestParam(required = false) Integer pageNo,
+            @RequestParam(required = false) Integer numOfRows
     ) {
-        return egenService.getAvailableBeds(stage1, stage2);
+        return egenService.getAvailableBeds(stage1, stage2, pageNo, numOfRows);
     }
 
     @GetMapping("/clinics")
@@ -44,18 +55,30 @@ public class EgenController implements EgenSwagger {
         return egenService.getClinics(Q0, Q1, QZ, QD, QT, QN, ORD, pageNo, numOfRows);
     }
 
+    @GetMapping("/clinic/nearby")
+    public EgenResponse<NearbyHospitalItem> getNearbyClinics(
+            @RequestParam double lat,
+            @RequestParam double lon,
+            @RequestParam(required = false) Integer pageNo,
+            @RequestParam(required = false) Integer numOfRows
+    ) {
+        return egenService.getNearbyClinics(lat, lon, pageNo, numOfRows);
+    }
+
     @GetMapping("/clinic/info")
-    public EgenResponse<HospitalInfoItem> getClinicInfo(@RequestParam String hpid) {
-        return egenService.getClinicInfo(hpid);
+    public EgenResponse<HospitalInfoItem> getClinicInfo(
+            @RequestParam String hpid,
+            @RequestParam(required = false) Integer pageNo,
+            @RequestParam(required = false) Integer numOfRows
+    ) {
+        return egenService.getClinicInfo(hpid, pageNo, numOfRows);
     }
 
     @GetMapping("/clinic/fulldata")
-    public EgenResponse<HospitalInfoItem> getFullData() {
-        return egenService.getFullData();
-    }
-
-    @GetMapping("/clinic/nearby")
-    public EgenResponse<NearbyHospitalItem> getNearbyClinics(@RequestParam double lat, @RequestParam double lon) {
-        return egenService.getNearbyClinics(lat, lon);
+    public EgenResponse<HospitalInfoItem> getFullData(
+            @RequestParam(required = false) Integer pageNo,
+            @RequestParam(required = false) Integer numOfRows
+    ) {
+        return egenService.getFullData(pageNo, numOfRows);
     }
 }

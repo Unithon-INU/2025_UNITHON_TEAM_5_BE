@@ -25,30 +25,39 @@ public class EgenService {
 
     private final RestTemplate restTemplate;
 
-    public EgenResponse<NearbyHospitalItem> getNearbyHospitals(double lat, double lon) {
-        String url = String.format("%s/ErmctInfoInqireService/getEgytLcinfoInqire?serviceKey=%s&WGS84_LAT=%s&WGS84_LON=%s&pageNo=1&numOfRows=10&_type=json",
-                baseUrl, apiKey,
-                URLEncoder.encode(String.valueOf(lat), StandardCharsets.UTF_8),
-                URLEncoder.encode(String.valueOf(lon), StandardCharsets.UTF_8)
-        );
-        return callEgenApi(url, NearbyHospitalItem.class);
+    public EgenResponse<NearbyHospitalItem> getNearbyHospitals(double lat, double lon, Integer pageNo, Integer numOfRows) {
+        StringBuilder url = new StringBuilder(baseUrl + "/ErmctInfoInqireService/getEgytLcinfoInqire?serviceKey=" + apiKey);
+
+        url.append("&WGS84_LAT=").append(URLEncoder.encode(String.valueOf(lat), StandardCharsets.UTF_8));
+        url.append("&WGS84_LON=").append(URLEncoder.encode(String.valueOf(lon), StandardCharsets.UTF_8));
+        if (pageNo != null) url.append("&pageNo=").append(pageNo);
+        if (numOfRows != null) url.append("&numOfRows=").append(numOfRows);
+        url.append("&_type=json");
+
+        return callEgenApi(url.toString(), NearbyHospitalItem.class);
     }
 
-    public EgenResponse<HospitalInfoItem> getHospitalInfo(String hpid) {
-        String url = String.format("%s/ErmctInfoInqireService/getEgytBassInfoInqire?serviceKey=%s&HPID=%s&pageNo=1&numOfRows=10&_type=json",
-                baseUrl, apiKey,
-                URLEncoder.encode(hpid, StandardCharsets.UTF_8)
-        );
-        return callEgenApi(url, HospitalInfoItem.class);
+    public EgenResponse<HospitalInfoItem> getHospitalInfo(String hpid, Integer pageNo, Integer numOfRows) {
+        StringBuilder url = new StringBuilder(baseUrl + "/ErmctInfoInqireService/getEgytBassInfoInqire?serviceKey=" + apiKey);
+
+        if (hpid != null) url.append("&HPID=").append(URLEncoder.encode(hpid, StandardCharsets.UTF_8));
+        if (pageNo != null) url.append("&pageNo=").append(pageNo);
+        if (numOfRows != null) url.append("&numOfRows=").append(numOfRows);
+        url.append("&_type=json");
+
+        return callEgenApi(url.toString(), HospitalInfoItem.class);
     }
 
-    public EgenResponse<AvailableBedsItem> getAvailableBeds(String stage1, String stage2) {
-        String url = String.format("%s/ErmctInfoInqireService/getEmrrmRltmUsefulSckbdInfoInqire?serviceKey=%s&STAGE1=%s&STAGE2=%s&pageNo=1&numOfRows=10&_type=json",
-                baseUrl, apiKey,
-                URLEncoder.encode(stage1, StandardCharsets.UTF_8),
-                URLEncoder.encode(stage2, StandardCharsets.UTF_8)
-        );
-        return callEgenApi(url, AvailableBedsItem.class);
+    public EgenResponse<AvailableBedsItem> getAvailableBeds(String stage1, String stage2, Integer pageNo, Integer numOfRows) {
+        StringBuilder url = new StringBuilder(baseUrl + "/ErmctInfoInqireService/getEmrrmRltmUsefulSckbdInfoInqire?serviceKey=" + apiKey);
+
+        if (stage1 != null) url.append("&STAGE1=").append(URLEncoder.encode(stage1, StandardCharsets.UTF_8));
+        if (stage2 != null) url.append("&STAGE2=").append(URLEncoder.encode(stage2, StandardCharsets.UTF_8));
+        if (pageNo != null) url.append("&pageNo=").append(pageNo);
+        if (numOfRows != null) url.append("&numOfRows=").append(numOfRows);
+        url.append("&_type=json");
+
+        return callEgenApi(url.toString(), AvailableBedsItem.class);
     }
 
     public EgenResponse<ClinicItem> getClinics(
@@ -70,28 +79,37 @@ public class EgenService {
         return callEgenApi(url.toString(), ClinicItem.class);
     }
 
-    public EgenResponse<NearbyHospitalItem> getNearbyClinics(double lat, double lon) {
-        String url = String.format("%s/HsptlAsembySearchService/getHsptlMdcncLcinfoInqire?serviceKey=%s&WGS84_LAT=%s&WGS84_LON=%s&pageNo=1&numOfRows=10&_type=json",
-                baseUrl, apiKey,
-                URLEncoder.encode(String.valueOf(lat), StandardCharsets.UTF_8),
-                URLEncoder.encode(String.valueOf(lon), StandardCharsets.UTF_8)
-        );
-        return callEgenApi(url, NearbyHospitalItem.class);
+    public EgenResponse<NearbyHospitalItem> getNearbyClinics(double lat, double lon, Integer pageNo, Integer numOfRows) {
+        StringBuilder url = new StringBuilder(baseUrl + "/HsptlAsembySearchService/getHsptlMdcncLcinfoInqire?serviceKey=" + apiKey);
+
+        url.append("&WGS84_LAT=").append(lat);
+        url.append("&WGS84_LON=").append(lon);
+        if (pageNo != null) url.append("&pageNo=").append(pageNo);
+        if (numOfRows != null) url.append("&numOfRows=").append(numOfRows);
+        url.append("&_type=json");
+
+        return callEgenApi(url.toString(), NearbyHospitalItem.class);
     }
 
-    public EgenResponse<HospitalInfoItem> getClinicInfo(String hpid) {
-        String url = String.format("%s/HsptlAsembySearchService/getHsptlBassInfoInqire?serviceKey=%s&HPID=%s&pageNo=1&numOfRows=10&_type=json",
-                baseUrl, apiKey,
-                URLEncoder.encode(hpid, StandardCharsets.UTF_8)
-        );
-        return callEgenApi(url, HospitalInfoItem.class);
+    public EgenResponse<HospitalInfoItem> getClinicInfo(String hpid, Integer pageNo, Integer numOfRows) {
+        StringBuilder url = new StringBuilder(baseUrl + "/HsptlAsembySearchService/getHsptlBassInfoInqire?serviceKey=" + apiKey);
+
+        if (hpid != null) url.append("&HPID=").append(hpid);
+        if (pageNo != null) url.append("&pageNo=").append(pageNo);
+        if (numOfRows != null) url.append("&numOfRows=").append(numOfRows);
+        url.append("&_type=json");
+
+        return callEgenApi(url.toString(), HospitalInfoItem.class);
     }
 
-    public EgenResponse<HospitalInfoItem> getFullData() {
-        String url = String.format("%s/HsptlAsembySearchService/getHsptlMdcncFullDown?serviceKey=%s&pageNo=1&numOfRows=10&_type=json",
-                baseUrl, apiKey
-        );
-        return callEgenApi(url, HospitalInfoItem.class);
+    public EgenResponse<HospitalInfoItem> getFullData(Integer pageNo, Integer numOfRows) {
+        StringBuilder url = new StringBuilder(baseUrl + "/HsptlAsembySearchService/getHsptlMdcncFullDown?serviceKey=" + apiKey);
+
+        if (pageNo != null) url.append("&pageNo=").append(pageNo);
+        if (numOfRows != null) url.append("&numOfRows=").append(numOfRows);
+        url.append("&_type=json");
+
+        return callEgenApi(url.toString(), HospitalInfoItem.class);
     }
 
     private <T> EgenResponse<T> callEgenApi(String url, Class<T> itemClass) {
