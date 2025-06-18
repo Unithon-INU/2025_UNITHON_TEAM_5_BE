@@ -9,17 +9,17 @@ services:
     networks:
       - curelingo-network
 
-  sonarqube:
-    image: sonarqube:community
-    container_name: sonarqube
-    ports:
-      - "9000:9000"
-    environment:
-      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
-    volumes:
-      - sonarqube_data:/opt/sonarqube/data
-      - sonarqube_extensions:/opt/sonarqube/extensions
-      - sonarqube_logs:/opt/sonarqube/logs
+#  sonarqube:
+#    image: sonarqube:community
+#    container_name: sonarqube
+#    ports:
+#      - "9000:9000"
+#    environment:
+#      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+#    volumes:
+#      - sonarqube_data:/opt/sonarqube/data
+#      - sonarqube_extensions:/opt/sonarqube/extensions
+#      - sonarqube_logs:/opt/sonarqube/logs
 
   mongo:
     image: mongo:latest
@@ -31,11 +31,13 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
     volumes:
       - mongo_data:/data/db
+    networks:
+      - curelingo-network
 
 volumes:
-  sonarqube_data:
-  sonarqube_extensions:
-  sonarqube_logs:
+#  sonarqube_data:
+#  sonarqube_extensions:
+#  sonarqube_logs:
   mongo_data:
 
 networks:
