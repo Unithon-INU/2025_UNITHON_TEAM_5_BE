@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.*;
 import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,21 +22,54 @@ public class ItemsWrapper<T> {
     private List<T> item;
 
     public static class SingleOrListDeserializer extends JsonDeserializer<List<?>> {
+        private static final Logger log = LoggerFactory.getLogger(SingleOrListDeserializer.class);
+
         @Override
         public List<?> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-            ObjectCodec codec = p.getCodec();
-            JsonNode node = codec.readTree(p);
-            List<Object> result = new ArrayList<>();
-            JavaType javaType = ctxt.getContextualType();
-            JavaType valueType = javaType != null && javaType.containedTypeCount() > 0 ? javaType.containedType(0) : ctxt.constructType(Object.class);
+            // Logging before reading node
+            JsonNode node = p.readValueAsTree();
+            log.info("[Deserializer] Raw JSON node: {}", node.toPrettyString());
 
-            if (node.isArray()) {
+            JavaType contextualType = ctxt.getContextualType();
+            log.info("[Deserializer] ContextualType: {}", contextualType);
+
+            // The node may be an object with "item" or just an array/object directly
+            JsonNode itemNode = node.get("item");
+            log.info("[Deserializer] itemNode: {}", itemNode);
+
+            ObjectCodec codec = p.getCodec();
+            JavaType valueType = (contextualType != null && contextualType.containedTypeCount() > 0)
+                    ? contextualType.containedType(0)
+                    : ctxt.constructType(Object.class);
+
+            List<Object> result = new ArrayList<>();
+            ObjectMapper mapper = (codec instanceof ObjectMapper) ? (ObjectMapper) codec : new ObjectMapper();
+
+            if (itemNode != null) {
+                if (itemNode.isArray()) {
+                    for (JsonNode e : itemNode) {
+                        Object parsed = mapper.treeToValue(e, valueType.getRawClass());
+                        log.info("[Deserializer] Parsed item: {}", parsed);
+                        result.add(parsed);
+                    }
+                } else {
+                    Object parsed = mapper.treeToValue(itemNode, valueType.getRawClass());
+                    log.info("[Deserializer] Parsed single item: {}", parsed);
+                    result.add(parsed);
+                }
+            } else if (node.isArray()) {
                 for (JsonNode e : node) {
-                    result.add(codec.treeToValue(e, valueType.getRawClass()));
+                    Object parsed = mapper.treeToValue(e, valueType.getRawClass());
+                    log.info("[Deserializer] Parsed item: {}", parsed);
+                    result.add(parsed);
                 }
             } else if (node.isObject()) {
-                result.add(codec.treeToValue(node, valueType.getRawClass()));
+                Object parsed = mapper.treeToValue(node, valueType.getRawClass());
+                log.info("[Deserializer] Parsed single item: {}", parsed);
+                result.add(parsed);
             }
+
+            log.info("[Deserializer] Final result list size: {}", result.size());
             return result;
         }
     }
