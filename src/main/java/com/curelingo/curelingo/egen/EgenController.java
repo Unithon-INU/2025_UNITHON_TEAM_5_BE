@@ -75,7 +75,7 @@ public class EgenController implements EgenSwagger {
     }
 
     @GetMapping("/clinic/fulldata")
-    public EgenResponse<HospitalInfoItem> getFullData(
+    public EgenResponse<HospitalFullInfoItem> getFullData(
             @RequestParam(required = false) Integer pageNo,
             @RequestParam(required = false) Integer numOfRows
     ) {

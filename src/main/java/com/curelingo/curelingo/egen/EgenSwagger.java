@@ -61,7 +61,7 @@ public interface EgenSwagger {
     );
 
     @Operation(summary = "병/의원 FullData 내려받기", description = "진료요일 등의 전체 병의원 정보를 조회하는 병/의원 FullData를 내려받을 수 있다.")
-    EgenResponse<HospitalInfoItem> getFullData(
+    EgenResponse<HospitalFullInfoItem> getFullData(
             @Parameter(description = "페이지 번호", example = "1") @RequestParam(required = false) Integer pageNo,
             @Parameter(description = "페이지당 건수", example = "10") @RequestParam(required = false) Integer numOfRows
     );

@@ -1,6 +1,7 @@
 package com.curelingo.curelingo.egen;
 
 import com.curelingo.curelingo.egen.dto.*;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -102,14 +103,14 @@ public class EgenService {
         return callEgenApi(url.toString(), HospitalInfoItem.class);
     }
 
-    public EgenResponse<HospitalInfoItem> getFullData(Integer pageNo, Integer numOfRows) {
+    public EgenResponse<HospitalFullInfoItem> getFullData(Integer pageNo, Integer numOfRows) {
         StringBuilder url = new StringBuilder(baseUrl + "/HsptlAsembySearchService/getHsptlMdcncFullDown?serviceKey=" + apiKey);
 
         if (pageNo != null) url.append("&pageNo=").append(pageNo);
         if (numOfRows != null) url.append("&numOfRows=").append(numOfRows);
         url.append("&_type=json");
 
-        return callEgenApi(url.toString(), HospitalInfoItem.class);
+        return callEgenApi(url.toString(), HospitalFullInfoItem.class);
     }
 
     private <T> EgenResponse<T> callEgenApi(String url, Class<T> itemClass) {
@@ -120,10 +121,10 @@ public class EgenService {
             log.info("Response: {}", responseStr);
 
             ObjectMapper mapper = new ObjectMapper();
-            EgenApiWrapper<T> wrapper = mapper.readValue(
-                    responseStr,
-                    mapper.getTypeFactory().constructParametricType(EgenApiWrapper.class, itemClass)
-            );
+            JavaType responseType = mapper.getTypeFactory()
+                    .constructParametricType(EgenApiWrapper.class,
+                            mapper.getTypeFactory().constructParametricType(EgenResponse.class, itemClass));
+            EgenApiWrapper<T> wrapper = mapper.readValue(responseStr, responseType);
             return wrapper.getResponse();
         } catch (Exception e) {
             log.error("Error calling Egen API", e);
