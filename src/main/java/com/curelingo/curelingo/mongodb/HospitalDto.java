@@ -1,8 +1,10 @@
 package com.curelingo.curelingo.mongodb;
 
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class HospitalDto {
     private String hpid;
     private String dutyName;
