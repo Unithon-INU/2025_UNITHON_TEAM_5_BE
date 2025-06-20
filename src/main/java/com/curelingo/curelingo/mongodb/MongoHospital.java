@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
 @Document(collection = "hospital")
-public class Hospital {
+public class MongoHospital {
 
     @Id
     private String hpid; // 기관ID
@@ -42,7 +42,7 @@ public class Hospital {
     private final String rnum; // 일련번호
 
     @Builder
-    public Hospital(
+    public MongoHospital(
             String hpid,
             String dutyName,
             String dutyAddr,
