@@ -30,7 +30,7 @@ public class EmergencyAdvisorController implements EmergencyAdvisorSwagger {
             @RequestParam double lng,
             @RequestParam double radiusKm
     ) {
-        List<NearbyHospitalDto> hospitals = emergencyAdvisorService.findNearbyHospitals(lat, lng, radiusKm);
+        List<NearbyHospitalDto> hospitals = emergencyAdvisorService.findNearbyERs(lat, lng, radiusKm);
         return ResponseEntity.ok(hospitals);
     }
 }
