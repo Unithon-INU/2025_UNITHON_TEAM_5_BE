@@ -40,12 +40,12 @@ public class EmergencyAdvisorService {
         return new EmergencyAdviceResponse(response.recommendedHospitalName(), response.recommendedReason());
     }
 
-    public List<NearbyHospitalDto> findAllNearbyHospitals(double lat, double lng, double radiusKm) {
+    public List<NearbyHospitalDto> findNearbyERs(double lat, double lng, double radiusKm) {
         int res = H3ResolutionUtil.chooseResolution(radiusKm);
         int k = H3ResolutionUtil.kFromRadius(radiusKm, res);
         log.info("[Hospital] 반경 {}km → res={}, k={}", radiusKm, res, k);
 
-        List<MongoHospital> mongoHospitals = hospitalRepository.findAll();
+        List<MongoHospital> mongoHospitals = hospitalRepository.findByDutyEryn("1");
         List<Hospital> hospitals = mongoHospitals.stream()
                 .map(HospitalMapper::toDomain)
                 .toList();
@@ -76,13 +76,12 @@ public class EmergencyAdvisorService {
         return result;
     }
 
-    public List<NearbyHospitalDto> findNearbyERs(double lat, double lng, double radiusKm) {
+    public List<NearbyHospitalDto> findAllNearbyHospitals(double lat, double lng, double radiusKm) {
         int res = H3ResolutionUtil.chooseResolution(radiusKm);
         int k = H3ResolutionUtil.kFromRadius(radiusKm, res);
         log.info("[Hospital] 반경 {}km → res={}, k={}", radiusKm, res, k);
 
-        // 여기만 변경!
-        List<MongoHospital> mongoHospitals = hospitalRepository.findByDutyEryn("1");
+        List<MongoHospital> mongoHospitals = hospitalRepository.findAll();
         List<Hospital> hospitals = mongoHospitals.stream()
                 .map(HospitalMapper::toDomain)
                 .toList();
