@@ -32,7 +32,7 @@ public class EgenController implements EgenSwagger {
 
     @GetMapping("/emergency/beds")
     public EgenResponse<AvailableBedsItem> getAvailableBeds(
-            @RequestParam String stage1,
+            @RequestParam(required = false) String stage1,
             @RequestParam(required = false) String stage2,
             @RequestParam(required = false) Integer pageNo,
             @RequestParam(required = false) Integer numOfRows
