@@ -2,6 +2,7 @@ package com.curelingo.curelingo.emergencyhospital;
 
 import com.curelingo.curelingo.emergencyhospital.dto.EmergencyAdviceRequest;
 import com.curelingo.curelingo.emergencyhospital.dto.EmergencyAdviceResponse;
+import com.curelingo.curelingo.emergencyhospital.dto.EmergencyBedStatus;
 import com.curelingo.curelingo.emergencyhospital.dto.NearbyHospitalDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,8 +21,15 @@ public interface EmergencyAdvisorSwagger {
             @Parameter(description = "응급상황 정보 요청") @RequestBody EmergencyAdviceRequest request
     );
 
-    @Operation(summary = "인근 응급실 정보 조회", description = "현재 위치를 기준으로 반경 N km 이내의 응급실 목록을 조회합니다.")
+    @Operation(summary = "인근 응급실 목록 조회", description = "현재 위치를 기준으로 반경 N km 이내의 응급실 목록을 조회합니다.")
     ResponseEntity<List<NearbyHospitalDto>> getNearbyHospitals(
+            @Parameter(description = "현재 위도", example = "37.5154") @RequestParam double lat,
+            @Parameter(description = "현재 경도", example = "127.0346") @RequestParam double lng,
+            @Parameter(description = "검색 반경(km)", example = "5.0") @RequestParam double radiusKm
+    );
+
+    @Operation(summary = "인근 응급실 가용병상 조회", description = "현재 위치를 기준으로 반경 N km 이내의 응급실 목록과 가용병상 정보를 조회합니다.")
+    List<EmergencyBedStatus> getNearbyEmergencyBedStatus(
             @Parameter(description = "현재 위도", example = "37.5154") @RequestParam double lat,
             @Parameter(description = "현재 경도", example = "127.0346") @RequestParam double lng,
             @Parameter(description = "검색 반경(km)", example = "5.0") @RequestParam double radiusKm
