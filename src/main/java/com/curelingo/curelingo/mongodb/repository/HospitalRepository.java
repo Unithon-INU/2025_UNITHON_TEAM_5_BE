@@ -1,5 +1,6 @@
-package com.curelingo.curelingo.mongodb;
+package com.curelingo.curelingo.mongodb.repository;
 
+import com.curelingo.curelingo.mongodb.MongoHospital;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

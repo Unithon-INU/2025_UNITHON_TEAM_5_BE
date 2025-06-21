@@ -2,6 +2,7 @@ package com.curelingo.curelingo.mongodb;
 
 import com.curelingo.curelingo.egen.dto.HospitalFullInfoItem;
 import com.curelingo.curelingo.egen.EgenService;
+import com.curelingo.curelingo.mongodb.repository.HospitalRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
