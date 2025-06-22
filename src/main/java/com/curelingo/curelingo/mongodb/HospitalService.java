@@ -2,6 +2,7 @@ package com.curelingo.curelingo.mongodb;
 
 import com.curelingo.curelingo.egen.dto.HospitalFullInfoItem;
 import com.curelingo.curelingo.egen.EgenService;
+import com.curelingo.curelingo.mongodb.repository.HospitalRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class HospitalService {
             return; // 중복 저장 방지
         }
 
-        Hospital hospital = Hospital.builder()
+        MongoHospital mongoHospital = MongoHospital.builder()
                 .hpid(dto.getHpid())
                 .dutyName(dto.getDutyName())
                 .dutyAddr(dto.getDutyAddr())
@@ -52,7 +53,7 @@ public class HospitalService {
                 .rnum(dto.getRnum())
                 .build();
 
-        hospitalRepository.save(hospital);
+        hospitalRepository.save(mongoHospital);
     }
 
     public int saveHospitalMongo() {
@@ -94,7 +95,7 @@ public class HospitalService {
                     }
 
                     // Hospital 엔티티 생성
-                    Hospital hospital = Hospital.builder()
+                    MongoHospital mongoHospital = MongoHospital.builder()
                             .hpid(item.getHpid())
                             .dutyName(safeString(item.getDutyName()))
                             .dutyAddr(safeString(item.getDutyAddr()))
@@ -124,7 +125,7 @@ public class HospitalService {
                             .rnum(safeString(item.getRnum()))
                             .build();
 
-                    hospitalRepository.save(hospital);
+                    hospitalRepository.save(mongoHospital);
                     pageSavedCount++;
                 }
 
