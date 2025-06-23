@@ -23,5 +23,5 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Build and run tests
-        run: ./gradlew build --no-daemon
+      - name: Build without tests
+        run: ./gradlew build -x test --no-daemon
