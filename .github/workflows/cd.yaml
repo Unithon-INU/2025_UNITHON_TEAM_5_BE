@@ -7,8 +7,6 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    env:
-      IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/curelingo-backend:latest
 
     steps:
       - name: Checkout code
@@ -34,22 +32,36 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t $IMAGE_NAME .
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/curelingo-backend:latest .
 
       - name: Push Docker image
         run: |
-          docker push $IMAGE_NAME
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/curelingo-backend:latest
 
-      - name: Deploy to GCP server via SSH
+      - name: Copy necessary files to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.GCP_SERVER_HOST }}
+          username: curelingo
+          key: ${{ secrets.GCP_SERVER_SSH_KEY }}
+          port: 22
+          source: |
+            docker-compose.prod.yaml
+            .env
+            nginx/
+            certbot/
+          target: /home/curelingo/app/
+
+      - name: Deploy via docker compose
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.GCP_SERVER_HOST }}
-          username: ${{ secrets.GCP_SERVER_USER }}
+          username: curelingo
           key: ${{ secrets.GCP_SERVER_SSH_KEY }}
           port: 22
           script: |
+            cd /home/curelingo/app
             docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
-            docker pull $IMAGE_NAME
-            docker stop curelingo-backend || true
-            docker rm curelingo-backend || true
-            docker run -d --name curelingo-backend -p 8080:8080 $IMAGE_NAME
+            docker compose -f docker-compose.prod.yaml pull
+            docker compose -f docker-compose.prod.yaml down || true
+            docker compose -f docker-compose.prod.yaml up -d --build
