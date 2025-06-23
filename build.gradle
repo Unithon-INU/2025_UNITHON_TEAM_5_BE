@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.5'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'org.sonarqube' version '6.2.0.5505'
 }
 
 group = 'com.curelingo'
@@ -27,12 +28,26 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+	implementation 'me.paulschwarz:spring-dotenv:4.0.0'
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml' // XML 파싱용
+	implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.3'
+	implementation 'com.uber:h3:4.0.0'
+}
+
+sonarqube {
+	properties {
+		property "sonar.projectKey", "curelingo-sonar-token"
+		property "sonar.host.url", "http://localhost:9000"
+		property "sonar.token", System.getenv("SONAR_TOKEN")
+	}
 }
 
 tasks.named('test') {
