@@ -223,13 +223,33 @@ public class HospitalService {
     }
 
     /**
-     * 모든 병원 목록을 조회합니다.
+     * hpid로 병원의 기본 정보(병원명, 주소)를 조회합니다.
      */
-    public List<HospitalDto> getAllHospitals(String language) {
-        List<MongoHospital> hospitals = hospitalRepository.findAll();
-        return hospitals.stream()
-                .map(hospital -> createLocalizedHospitalDto(hospital, language))
-                .toList();
+    public HospitalBasicDto getHospitalBasicInfo(String hpid, String language) {
+        try {
+            System.out.println("조회 시작 - hpid: " + hpid + ", language: " + language);
+            
+            MongoHospital hospital = hospitalRepository.findFirstByHpid(hpid);
+            System.out.println("병원 조회 결과: " + (hospital != null ? "찾음" : "없음"));
+            
+            if (hospital == null) {
+                return null;
+            }
+            
+            System.out.println("병원명(한국어): " + hospital.getDutyName());
+            System.out.println("병원명(영어): " + hospital.getDutyNameEn());
+            System.out.println("주소(한국어): " + hospital.getDutyAddr());
+            System.out.println("주소(영어): " + hospital.getDutyAddrEn());
+            
+            HospitalBasicDto result = HospitalBasicDto.from(hospital, language);
+            System.out.println("DTO 변환 완료");
+            
+            return result;
+        } catch (Exception e) {
+            System.err.println("getHospitalBasicInfo 에러: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     /**

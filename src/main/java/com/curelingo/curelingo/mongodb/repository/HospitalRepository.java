@@ -9,6 +9,10 @@ public interface HospitalRepository extends MongoRepository<MongoHospital, Strin
 
     // hpid 필드 기준 존재 여부 확인
     boolean existsByHpid(String hpid);
-    List<MongoHospital> findAll();
+    
+    // hpid로 병원 조회 (중복된 경우 첫 번째 결과 반환)
+    MongoHospital findFirstByHpid(String hpid);
+    
+    // 응급실 운영 병원 조회
     List<MongoHospital> findByDutyEryn(String dutyEryn);
 }

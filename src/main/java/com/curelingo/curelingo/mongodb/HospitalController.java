@@ -50,15 +50,27 @@ public class HospitalController implements HospitalSwagger {
         }
     }
 
-    @GetMapping
+    // hpid로 병원명과 주소 조회
+    @GetMapping("/{hpid}")
     @Override
-    public ResponseEntity<List<HospitalDto>> getAllHospitals(
+    public ResponseEntity<HospitalBasicDto> getHospitalBasicInfo(
+            @PathVariable String hpid,
             @RequestParam(defaultValue = "ko") String language
     ) {
         try {
-        List<HospitalDto> hospitals = hospitalService.getAllHospitals(language);
-            return ResponseEntity.ok(hospitals);
+            System.out.println("컨트롤러 - 요청 받음: hpid=" + hpid + ", language=" + language);
+            
+            HospitalBasicDto hospital = hospitalService.getHospitalBasicInfo(hpid, language);
+            if (hospital == null) {
+                System.out.println("컨트롤러 - 병원 없음, 404 반환");
+                return ResponseEntity.notFound().build();
+            }
+            
+            System.out.println("컨트롤러 - 성공적으로 응답 반환");
+            return ResponseEntity.ok(hospital);
         } catch (Exception e) {
+            System.err.println("컨트롤러 에러: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.internalServerError().body(null);
         }
     }
