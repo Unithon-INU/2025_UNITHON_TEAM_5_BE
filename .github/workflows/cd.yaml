@@ -60,7 +60,6 @@ jobs:
             docker-compose.prod.yaml
             .env
             nginx/
-            certbot/
           target: /home/curelingo/app/
 
       - name: Deploy via docker compose
