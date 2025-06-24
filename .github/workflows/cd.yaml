@@ -31,6 +31,18 @@ jobs:
           docker build -t $IMAGE_NAME:latest -f Dockerfile .
           docker push $IMAGE_NAME:latest
 
+      - name: Copy Compose and Nginx Config to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.GCP_SERVER_HOST }}
+          username: ${{ secrets.GCP_SERVER_USER }}
+          key: ${{ secrets.GCP_SERVER_SSH_KEY }}
+          port: 22
+          source: |
+            docker-compose.prod.yaml
+            nginx/
+          target: ~/app/
+
       - name: Deploy on GCP server via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -39,7 +51,7 @@ jobs:
           key: ${{ secrets.GCP_SERVER_SSH_KEY }}
           port: 22
           script: |
-            cd /home/${{ secrets.GCP_SERVER_USER }}/your-app-directory
+            cd ~/app
             echo "${{ secrets.ENV_FILE_CONTENTS }}" > .env
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/curelingo-backend:latest
             docker compose -f docker-compose.prod.yaml down
