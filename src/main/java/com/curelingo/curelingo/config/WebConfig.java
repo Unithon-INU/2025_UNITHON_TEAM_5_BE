@@ -14,8 +14,9 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:5173",  // Vite
-                                        "https://cure-lingo.com"  // Vercel
+                        .allowedOrigins("http://localhost:5173",       // Vite
+                                "https://cure-lingo.com",      // frontend server
+                                "https://cure-lingo.com"       // backend server
                         )
                         .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE")
                         .allowedHeaders("*")
