@@ -21,7 +21,7 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Build project
+      - name: Build project (no test)
         run: ./gradlew build --no-daemon -x test
 
       - name: Log in to DockerHub
@@ -37,6 +37,17 @@ jobs:
       - name: Push Docker image
         run: |
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/curelingo-backend:latest
+
+      - name: Create .env file from secret
+        run: echo "${{ secrets.ENV_FILE_CONTENTS }}" > .env
+
+      - name: Ensure certbot and nginx dirs exist
+        run: |
+          mkdir -p certbot/conf certbot/www
+          mkdir -p nginx
+
+      - name: Check files for deploy
+        run: ls -al && ls -al certbot && ls -al nginx
 
       - name: Copy necessary files to server
         uses: appleboy/scp-action@v0.1.7
