@@ -1,6 +1,7 @@
 services:
   backend:
     container_name: curelingo-backend
+    image: jongminec/curelingo-backend:latest
     build:
       context: .
       dockerfile: Dockerfile
