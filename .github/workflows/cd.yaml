@@ -49,9 +49,7 @@ jobs:
           username: ${{ secrets.GCP_SERVER_USER }}
           key: ${{ secrets.GCP_SERVER_SSH_KEY }}
           port: 22
-          source: |
-            ./docker-compose.prod.yaml
-            ./nginx/
+          source: "./docker-compose.prod.yaml ./nginx/"
           target: ~/app/
 
       - name: Deploy on GCP server via SSH
