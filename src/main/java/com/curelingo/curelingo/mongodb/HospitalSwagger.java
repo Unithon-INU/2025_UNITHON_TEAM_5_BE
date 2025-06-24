@@ -44,13 +44,4 @@ public interface HospitalSwagger {
             @Parameter(description = "응답 언어 (ko: 한국어, en: 영어)", example = "ko")
             @RequestParam(defaultValue = "ko") String language
     );
-
-    @Operation(
-            summary = "응급실 운영 병원 조회 (다국어 지원)",
-            description = "응급실을 운영하는 병원만 조회합니다."
-    )
-    ResponseEntity<List<HospitalDto>> getEmergencyHospitals(
-            @Parameter(description = "응답 언어 (ko: 한국어, en: 영어)", example = "ko")
-            @RequestParam(defaultValue = "ko") String language
-    );
 }

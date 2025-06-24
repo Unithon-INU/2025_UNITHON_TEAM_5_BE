@@ -77,17 +77,4 @@ public class HospitalController implements HospitalSwagger {
             return ResponseEntity.internalServerError().body(null);
         }
     }
-
-    @GetMapping("/emergency")
-    @Override
-    public ResponseEntity<List<HospitalDto>> getEmergencyHospitals(
-            @RequestParam(defaultValue = "ko") String language
-    ) {
-        try {
-            List<HospitalDto> hospitals = hospitalService.getEmergencyHospitals(language);
-            return ResponseEntity.ok(hospitals);
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(null);
-        }
-    }
 }

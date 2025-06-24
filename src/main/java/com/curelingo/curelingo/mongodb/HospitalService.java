@@ -258,16 +258,6 @@ public class HospitalService {
     }
 
     /**
-     * 응급실 운영 병원만 조회합니다.
-     */
-    public List<HospitalDto> getEmergencyHospitals(String language) {
-        List<MongoHospital> hospitals = hospitalRepository.findByDutyEryn("1"); // 1은 응급실 운영
-        return hospitals.stream()
-                .map(hospital -> createLocalizedHospitalDto(hospital, language))
-                .toList();
-    }
-
-    /**
      * 언어에 따라 적절한 HospitalDto를 생성합니다.
      */
     private HospitalDto createLocalizedHospitalDto(MongoHospital mongoHospital, String language) {
