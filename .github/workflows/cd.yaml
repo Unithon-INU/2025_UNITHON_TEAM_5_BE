@@ -31,6 +31,17 @@ jobs:
           docker build -t $IMAGE_NAME:latest -f Dockerfile .
           docker push $IMAGE_NAME:latest
 
+      - name: Check files before SCP
+        run: |
+          echo "== [RUNNER WORKSPACE] =="
+          pwd
+          echo "--- ls -al ---"
+          ls -al
+          echo "--- ls -al ./nginx ---"
+          ls -al ./nginx
+          echo "--- ls -l docker-compose.prod.yaml ---"
+          ls -l docker-compose.prod.yaml
+
       - name: Copy Compose and Nginx Config to Server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -39,8 +50,8 @@ jobs:
           key: ${{ secrets.GCP_SERVER_SSH_KEY }}
           port: 22
           source: |
-            docker-compose.prod.yaml
-            nginx/
+            ./docker-compose.prod.yaml
+            ./nginx/
           target: ~/app/
 
       - name: Deploy on GCP server via SSH
