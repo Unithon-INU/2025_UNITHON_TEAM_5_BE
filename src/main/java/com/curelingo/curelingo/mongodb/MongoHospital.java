@@ -12,8 +12,10 @@ public class MongoHospital {
     @Id
     private String hpid; // 기관ID
 
-    private final String dutyName; // 기관명
-    private final String dutyAddr; // 주소
+    private final String dutyName; // 기관명 (한국어)
+    private final String dutyNameEn; // 기관명 (영어)
+    private final String dutyAddr; // 주소 (한국어)
+    private final String dutyAddrEn; // 주소 (영어)
     private final String dutyDivNam; // 병원분류명
     private final String dutyEryn; // 응급실운영여부
     private final String dutyTel1; // 대표전화1
@@ -45,7 +47,9 @@ public class MongoHospital {
     public MongoHospital(
             String hpid,
             String dutyName,
+            String dutyNameEn,
             String dutyAddr,
+            String dutyAddrEn,
             String dutyDivNam,
             String dutyEryn,
             String dutyTel1,
@@ -73,7 +77,9 @@ public class MongoHospital {
     ) {
         this.hpid = hpid;
         this.dutyName = dutyName;
+        this.dutyNameEn = dutyNameEn;
         this.dutyAddr = dutyAddr;
+        this.dutyAddrEn = dutyAddrEn;
         this.dutyDivNam = dutyDivNam;
         this.dutyEryn = dutyEryn;
         this.dutyTel1 = dutyTel1;

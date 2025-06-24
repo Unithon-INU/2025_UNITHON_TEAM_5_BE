@@ -3,6 +3,8 @@ package com.curelingo.curelingo.mongodb;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/hospitals")
 public class HospitalController implements HospitalSwagger {
@@ -16,9 +18,13 @@ public class HospitalController implements HospitalSwagger {
     // 단일 병원 저장
     @PostMapping
     @Override
-    public ResponseEntity<String> saveHospital(@RequestBody HospitalDto dto) {
-        hospitalService.saveHospital(dto);
-        return ResponseEntity.ok("병원 정보가 저장되었습니다.");
+    public ResponseEntity<HospitalDto> saveHospital(@RequestBody HospitalDto dto) {
+        try {
+            HospitalDto savedHospital = hospitalService.saveHospital(dto);
+            return ResponseEntity.ok(savedHospital);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(null);
+        }
     }
 
     // 전체 병원 자동 저장
@@ -41,6 +47,32 @@ public class HospitalController implements HospitalSwagger {
             return ResponseEntity.ok("모든 병원 데이터가 삭제되었습니다.");
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("병원 데이터 삭제 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
+
+    @GetMapping
+    @Override
+    public ResponseEntity<List<HospitalDto>> getAllHospitals(
+            @RequestParam(defaultValue = "ko") String language
+    ) {
+        try {
+        List<HospitalDto> hospitals = hospitalService.getAllHospitals(language);
+            return ResponseEntity.ok(hospitals);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(null);
+        }
+    }
+
+    @GetMapping("/emergency")
+    @Override
+    public ResponseEntity<List<HospitalDto>> getEmergencyHospitals(
+            @RequestParam(defaultValue = "ko") String language
+    ) {
+        try {
+            List<HospitalDto> hospitals = hospitalService.getEmergencyHospitals(language);
+            return ResponseEntity.ok(hospitals);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(null);
         }
     }
 }

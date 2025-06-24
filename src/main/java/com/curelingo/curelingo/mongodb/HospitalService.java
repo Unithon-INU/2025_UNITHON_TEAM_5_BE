@@ -3,30 +3,46 @@ package com.curelingo.curelingo.mongodb;
 import com.curelingo.curelingo.egen.dto.HospitalFullInfoItem;
 import com.curelingo.curelingo.egen.EgenService;
 import com.curelingo.curelingo.mongodb.repository.HospitalRepository;
+import com.curelingo.curelingo.translation.GoogleTranslationService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.ArrayList;
 
 @Service
 public class HospitalService {
 
     private final HospitalRepository hospitalRepository;
     private final EgenService egenService;
+    private final GoogleTranslationService translationService;
 
-    public HospitalService(HospitalRepository hospitalRepository, EgenService egenService) {
+    public HospitalService(HospitalRepository hospitalRepository, 
+                          EgenService egenService,
+                          GoogleTranslationService translationService) {
         this.hospitalRepository = hospitalRepository;
         this.egenService = egenService;
+        this.translationService = translationService;
     }
 
-    public void saveHospital(HospitalDto dto) {
+    public HospitalDto saveHospital(HospitalDto dto) {
         if (hospitalRepository.existsByHpid(dto.getHpid())) {
-            return; // 중복 저장 방지
+            // 이미 존재하는 병원이면 기존 데이터 반환
+            MongoHospital existing = hospitalRepository.findById(dto.getHpid()).orElse(null);
+            if (existing != null) {
+                return HospitalDto.from(existing);
+            }
         }
+
+        // 병원명과 주소 번역
+        String dutyNameEn = translationService.translateToEnglish(dto.getDutyName());
+        String dutyAddrEn = translationService.translateToEnglish(dto.getDutyAddr());
 
         MongoHospital mongoHospital = MongoHospital.builder()
                 .hpid(dto.getHpid())
                 .dutyName(dto.getDutyName())
+                .dutyNameEn(dutyNameEn)  // 번역된 병원명
                 .dutyAddr(dto.getDutyAddr())
+                .dutyAddrEn(dutyAddrEn)  // 번역된 주소
                 .dutyDivNam(dto.getDutyDivNam())
                 .dutyEryn(dto.getDutyEryn())
                 .dutyTel1(dto.getDutyTel1())
@@ -53,7 +69,8 @@ public class HospitalService {
                 .rnum(dto.getRnum())
                 .build();
 
-        hospitalRepository.save(mongoHospital);
+        MongoHospital savedHospital = hospitalRepository.save(mongoHospital);
+        return HospitalDto.from(savedHospital);
     }
 
     public int saveHospitalMongo() {
@@ -83,6 +100,12 @@ public class HospitalService {
                 System.out.println("페이지 " + pageNo + "에서 " + items.size() + "개의 병원 데이터를 처리 중...");
 
                 int pageSavedCount = 0;
+                
+                // 번역할 텍스트들을 수집 (배치 번역을 위해)
+                List<String> hospitalNames = new ArrayList<>();
+                List<String> hospitalAddresses = new ArrayList<>();
+                List<HospitalFullInfoItem> validItems = new ArrayList<>();
+                
                 for (HospitalFullInfoItem item : items) {
                     // 필수 필드 검증
                     if (item.getHpid() == null || item.getHpid().trim().isEmpty() || "null".equals(item.getHpid())) {
@@ -93,12 +116,43 @@ public class HospitalService {
                     if (hospitalRepository.existsByHpid(item.getHpid())) {
                         continue;
                     }
+                    
+                    validItems.add(item);
+                    hospitalNames.add(safeString(item.getDutyName()));
+                    hospitalAddresses.add(safeString(item.getDutyAddr()));
+                }
+                
+                if (validItems.isEmpty()) {
+                    pageNo++;
+                    Thread.sleep(100);
+                    continue;
+                }
+                
+                // 배치 번역 실행
+                List<String> translatedNames = null;
+                List<String> translatedAddresses = null;
+                
+                System.out.println("번역 중... " + validItems.size() + "개 병원");
+                
+                translatedNames = translationService.translateMultipleToEnglish(hospitalNames);
+                translatedAddresses = translationService.translateMultipleToEnglish(hospitalAddresses);
+                
+                // 검증된 아이템들을 저장
+                for (int i = 0; i < validItems.size(); i++) {
+                    HospitalFullInfoItem item = validItems.get(i);
+                    
+                    String dutyNameEn = (translatedNames != null && i < translatedNames.size()) 
+                            ? translatedNames.get(i) : safeString(item.getDutyName());
+                    String dutyAddrEn = (translatedAddresses != null && i < translatedAddresses.size()) 
+                            ? translatedAddresses.get(i) : safeString(item.getDutyAddr());
 
                     // Hospital 엔티티 생성
                     MongoHospital mongoHospital = MongoHospital.builder()
                             .hpid(item.getHpid())
                             .dutyName(safeString(item.getDutyName()))
+                            .dutyNameEn(dutyNameEn)  // 번역된 병원명
                             .dutyAddr(safeString(item.getDutyAddr()))
+                            .dutyAddrEn(dutyAddrEn)  // 번역된 주소
                             .dutyDivNam(safeString(item.getDutyDivNam()))
                             .dutyEryn(safeString(item.getDutyEryn()))
                             .dutyTel1(safeString(item.getDutyTel1()))
@@ -146,6 +200,7 @@ public class HospitalService {
         }
 
         System.out.println("총 " + totalSavedCount + "개의 병원이 저장되었습니다.");
+        
         return totalSavedCount;
     }
 
@@ -160,10 +215,71 @@ public class HospitalService {
     }
 
     /**
-     * 모든 병원 데이터 삭제
+     * 모든 병원 데이터를 삭제합니다.
      */
     public void deleteAllHospitals() {
         hospitalRepository.deleteAll();
         System.out.println("모든 병원 데이터가 삭제되었습니다.");
+    }
+
+    /**
+     * 모든 병원 목록을 조회합니다.
+     */
+    public List<HospitalDto> getAllHospitals(String language) {
+        List<MongoHospital> hospitals = hospitalRepository.findAll();
+        return hospitals.stream()
+                .map(hospital -> createLocalizedHospitalDto(hospital, language))
+                .toList();
+    }
+
+    /**
+     * 응급실 운영 병원만 조회합니다.
+     */
+    public List<HospitalDto> getEmergencyHospitals(String language) {
+        List<MongoHospital> hospitals = hospitalRepository.findByDutyEryn("1"); // 1은 응급실 운영
+        return hospitals.stream()
+                .map(hospital -> createLocalizedHospitalDto(hospital, language))
+                .toList();
+    }
+
+    /**
+     * 언어에 따라 적절한 HospitalDto를 생성합니다.
+     */
+    private HospitalDto createLocalizedHospitalDto(MongoHospital mongoHospital, String language) {
+        boolean useEnglish = "en".equalsIgnoreCase(language);
+        
+        return HospitalDto.builder()
+                .hpid(mongoHospital.getHpid())
+                .dutyName(useEnglish && mongoHospital.getDutyNameEn() != null 
+                    ? mongoHospital.getDutyNameEn() : mongoHospital.getDutyName())
+                .dutyNameEn(mongoHospital.getDutyNameEn())
+                .dutyAddr(useEnglish && mongoHospital.getDutyAddrEn() != null 
+                    ? mongoHospital.getDutyAddrEn() : mongoHospital.getDutyAddr())
+                .dutyAddrEn(mongoHospital.getDutyAddrEn())
+                .dutyDivNam(mongoHospital.getDutyDivNam())
+                .dutyEryn(mongoHospital.getDutyEryn())
+                .dutyTel1(mongoHospital.getDutyTel1())
+                .dutyTel3(mongoHospital.getDutyTel3())
+                .dutyEtc(mongoHospital.getDutyEtc())
+                .dutyTime1s(mongoHospital.getDutyTime1s())
+                .dutyTime1c(mongoHospital.getDutyTime1c())
+                .dutyTime2s(mongoHospital.getDutyTime2s())
+                .dutyTime2c(mongoHospital.getDutyTime2c())
+                .dutyTime3s(mongoHospital.getDutyTime3s())
+                .dutyTime3c(mongoHospital.getDutyTime3c())
+                .dutyTime4s(mongoHospital.getDutyTime4s())
+                .dutyTime4c(mongoHospital.getDutyTime4c())
+                .dutyTime5s(mongoHospital.getDutyTime5s())
+                .dutyTime5c(mongoHospital.getDutyTime5c())
+                .dutyTime6s(mongoHospital.getDutyTime6s())
+                .dutyTime6c(mongoHospital.getDutyTime6c())
+                .dutyTime7s(mongoHospital.getDutyTime7s())
+                .dutyTime7c(mongoHospital.getDutyTime7c())
+                .dutyTime8s(mongoHospital.getDutyTime8s())
+                .dutyTime8c(mongoHospital.getDutyTime8c())
+                .wgs84Lat(mongoHospital.getWgs84Lat())
+                .wgs84Lon(mongoHospital.getWgs84Lon())
+                .rnum(mongoHospital.getRnum())
+                .build();
     }
 }
