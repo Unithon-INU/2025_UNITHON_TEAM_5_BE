@@ -48,7 +48,8 @@ jobs:
       # 7. 서버에 nginx 설정파일 전송
       - name: Upload nginx config directory
         run: |
-          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -r ./nginx ${{ secrets.GCP_SERVER_USER }}@${{ secrets.GCP_SERVER_HOST }}:~/app/nginx
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.GCP_SERVER_USER }}@${{ secrets.GCP_SERVER_HOST }} "rm -rf ~/app/nginx"
+          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -r ./nginx ${{ secrets.GCP_SERVER_USER }}@${{ secrets.GCP_SERVER_HOST }}:~/app/
 
       # 8. .env 파일 서버에 작성 (내용은 secret에서)
       - name: Upload .env file
