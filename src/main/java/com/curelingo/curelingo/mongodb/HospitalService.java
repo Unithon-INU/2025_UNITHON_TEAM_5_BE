@@ -252,10 +252,10 @@ public class HospitalService {
                 .hpid(mongoHospital.getHpid())
                 .dutyName(useEnglish && mongoHospital.getDutyNameEn() != null 
                     ? mongoHospital.getDutyNameEn() : mongoHospital.getDutyName())
-                .dutyNameEn(mongoHospital.getDutyNameEn())
+                .dutyNameEn(mongoHospital.getDutyNameEn())  // 항상 영어 필드 포함 (null이면 JSON에서 제외됨)
                 .dutyAddr(useEnglish && mongoHospital.getDutyAddrEn() != null 
                     ? mongoHospital.getDutyAddrEn() : mongoHospital.getDutyAddr())
-                .dutyAddrEn(mongoHospital.getDutyAddrEn())
+                .dutyAddrEn(mongoHospital.getDutyAddrEn())  // 항상 영어 필드 포함 (null이면 JSON에서 제외됨)
                 .dutyDivNam(mongoHospital.getDutyDivNam())
                 .dutyEryn(mongoHospital.getDutyEryn())
                 .dutyTel1(mongoHospital.getDutyTel1())

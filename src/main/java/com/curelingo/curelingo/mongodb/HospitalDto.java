@@ -1,16 +1,28 @@
 package com.curelingo.curelingo.mongodb;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
+@JsonPropertyOrder({
+    "hpid", 
+    "dutyName", "dutyNameEn",
+    "dutyAddr", "dutyAddrEn", 
+    "dutyDivNam", "dutyEryn", 
+    "dutyTel1", "dutyTel3", "dutyEtc",
+    "dutyTime1s", "dutyTime1c", "dutyTime2s", "dutyTime2c",
+    "dutyTime3s", "dutyTime3c", "dutyTime4s", "dutyTime4c", 
+    "dutyTime5s", "dutyTime5c", "dutyTime6s", "dutyTime6c",
+    "dutyTime7s", "dutyTime7c", "dutyTime8s", "dutyTime8c",
+    "wgs84Lat", "wgs84Lon", "rnum"
+})
 public class HospitalDto {
     private String hpid;
     private String dutyName;      // 한국어 병원명
-    private String dutyNameEn;    // 영어 병원명
     private String dutyAddr;      // 한국어 주소
-    private String dutyAddrEn;    // 영어 주소
     private String dutyDivNam;
     private String dutyEryn;
     private String dutyTel1;
@@ -35,6 +47,13 @@ public class HospitalDto {
     private Double wgs84Lat;
     private Double wgs84Lon;
     private String rnum;
+
+    // 응답에서만 포함되는 영어 필드들 (요청 시에는 무시됨)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String dutyNameEn;    // 영어 병원명 (응답용)
+    
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String dutyAddrEn;    // 영어 주소 (응답용)
 
     /**
      * 언어에 따라 병원명을 반환합니다.
@@ -90,6 +109,20 @@ public class HospitalDto {
                 .wgs84Lat(mongoHospital.getWgs84Lat())
                 .wgs84Lon(mongoHospital.getWgs84Lon())
                 .rnum(mongoHospital.getRnum())
+                .build();
+    }
+
+    /**
+     * 요청용 생성자 - 영어 필드 없이 생성
+     */
+    public static HospitalDto forRequest(String hpid, String dutyName, String dutyAddr, 
+                                        String dutyTel1, String dutyEryn) {
+        return HospitalDto.builder()
+                .hpid(hpid)
+                .dutyName(dutyName)
+                .dutyAddr(dutyAddr)
+                .dutyTel1(dutyTel1)
+                .dutyEryn(dutyEryn)
                 .build();
     }
 }

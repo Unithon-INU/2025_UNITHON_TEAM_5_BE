@@ -14,9 +14,7 @@ public interface HospitalSwagger {
 
     @Operation(
             summary = "단일 병원 정보 저장",
-            description = "HospitalDto를 입력받아 MongoDB에 병원 정보를 저장합니다.\n" +
-                    "병원명과 주소는 자동으로 영어로 번역되어 함께 저장됩니다.\n" +
-                    "저장된 병원 정보(번역 포함)를 응답으로 반환합니다."
+            description = "단일 병원 정보를 MongoDB에 저장합니다."
     )
     ResponseEntity<HospitalDto> saveHospital(@RequestBody HospitalDto dto);
 
