@@ -5,7 +5,7 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   exit 1
 fi
 
-compose_file="docker-compose.yaml"
+compose_file="docker-compose.prod.yaml"
 
 domains=("api.cure-lingo.com")
 rsa_key_size=4096
