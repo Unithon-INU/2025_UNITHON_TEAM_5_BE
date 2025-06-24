@@ -63,5 +63,6 @@ jobs:
             cd /home/curelingo/app
             docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
             docker compose -f docker-compose.prod.yaml pull
-            docker compose -f docker-compose.prod.yaml down || true
-            docker compose -f docker-compose.prod.yaml up -d --build
+            docker compose -f docker-compose.prod.yaml down --remove-orphans || true
+            docker compose -f docker-compose.prod.yaml up -d --pull always --build
+            docker system prune -af
