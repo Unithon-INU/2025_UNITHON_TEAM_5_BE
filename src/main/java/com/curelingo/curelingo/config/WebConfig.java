@@ -16,7 +16,7 @@ public class WebConfig {
                 registry.addMapping("/**")
                         .allowedOrigins("http://localhost:5173",       // Vite
                                 "https://cure-lingo.com",      // frontend server
-                                "https://cure-lingo.com"       // backend server
+                                "https://api.cure-lingo.com"       // backend server
                         )
                         .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE")
                         .allowedHeaders("*")
