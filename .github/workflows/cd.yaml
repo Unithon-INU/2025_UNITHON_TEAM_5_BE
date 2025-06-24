@@ -10,58 +10,58 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. 코드 체크아웃
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: 17
-
+      # 2. DockerHub 로그인
       - name: Log in to DockerHub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
+      # 3. Docker 이미지 빌드 & 푸시
       - name: Build and push backend Docker image
         run: |
           IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/curelingo-backend
           docker build -t $IMAGE_NAME:latest -f Dockerfile .
           docker push $IMAGE_NAME:latest
 
-      - name: Check files before SCP
+      # 4. SSH 프라이빗키 생성 (github action용)
+      - name: Create SSH private key
         run: |
-          echo "== [RUNNER WORKSPACE] =="
-          pwd
-          echo "--- ls -al ---"
-          ls -al
-          echo "--- ls -al ./nginx ---"
-          ls -al ./nginx
-          echo "--- ls -l docker-compose.prod.yaml ---"
-          ls -l docker-compose.prod.yaml
+          mkdir -p ~/.ssh
+          echo "${{ secrets.GCP_SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
 
-      - name: Copy Compose and Nginx Config to Server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.GCP_SERVER_HOST }}
-          username: ${{ secrets.GCP_SERVER_USER }}
-          key: ${{ secrets.GCP_SERVER_SSH_KEY }}
-          port: 22
-          source: "./docker-compose.prod.yaml ./nginx/"
-          target: ~/app/
+      # 5. 서버에 app 디렉토리 생성
+      - name: Create app directory on GCP
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.GCP_SERVER_USER }}@${{ secrets.GCP_SERVER_HOST }} "mkdir -p ~/app"
 
-      - name: Deploy on GCP server via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.GCP_SERVER_HOST }}
-          username: ${{ secrets.GCP_SERVER_USER }}
-          key: ${{ secrets.GCP_SERVER_SSH_KEY }}
-          port: 22
-          script: |
-            cd ~/app
-            echo "${{ secrets.ENV_FILE_CONTENTS }}" > .env
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/curelingo-backend:latest
-            docker compose -f docker-compose.prod.yaml down
-            docker compose -f docker-compose.prod.yaml up -d --remove-orphans
+      # 6. 서버에 docker-compose.prod.yaml 전송
+      - name: Upload docker-compose.prod.yaml
+        run: |
+          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ./docker-compose.prod.yaml ${{ secrets.GCP_SERVER_USER }}@${{ secrets.GCP_SERVER_HOST }}:~/app/docker-compose.prod.yaml
+
+      # 7. 서버에 nginx 설정파일 전송
+      - name: Upload nginx config directory
+        run: |
+          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -r ./nginx ${{ secrets.GCP_SERVER_USER }}@${{ secrets.GCP_SERVER_HOST }}:~/app/nginx
+
+      # 8. .env 파일 서버에 작성 (내용은 secret에서)
+      - name: Upload .env file
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.GCP_SERVER_USER }}@${{ secrets.GCP_SERVER_HOST }} "echo '${{ secrets.ENV_FILE_CONTENTS }}' > ~/app/.env"
+
+      # 9. 서버에서 최신 이미지 pull & docker compose up
+      - name: Deploy on GCP server
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.GCP_SERVER_USER }}@${{ secrets.GCP_SERVER_HOST }} << 'EOF'
+          cd ~/app
+          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/curelingo-backend:latest
+          docker compose -f docker-compose.prod.yaml down
+          docker compose -f docker-compose.prod.yaml up -d --remove-orphans
+          EOF
