@@ -38,5 +38,7 @@ out/
 .vscode/
 
 ### Certbot ###
-certbot/
-init-letsencrypt.sh
+certbot/conf/*
+certbot/www/*
+!certbot/conf/.gitkeep
+!certbot/www/.gitkeep
