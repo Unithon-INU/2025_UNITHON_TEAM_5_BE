@@ -39,15 +39,26 @@ jobs:
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/curelingo-backend:latest
 
       - name: Create .env file from secret
-        run: echo "${{ secrets.ENV_FILE_CONTENTS }}" > .env
+        run: |
+          echo "${{ secrets.ENV_FILE_CONTENTS }}" > .env
+          echo "[INFO] .env contents:"
+          cat .env
 
       - name: Ensure certbot and nginx dirs exist
         run: |
           mkdir -p certbot/conf certbot/www
           mkdir -p nginx
 
-      - name: Check files for deploy
-        run: ls -al && ls -al certbot && ls -al nginx
+      - name: Check files before SCP
+        run: |
+          echo "[INFO] Root dir:"
+          ls -al
+          echo "[INFO] certbot dir:"
+          ls -al certbot
+          echo "[INFO] nginx dir:"
+          ls -al nginx
+          echo "[INFO] .env file:"
+          ls -al .env
 
       - name: Copy necessary files to server
         uses: appleboy/scp-action@v0.1.7
