@@ -1,5 +1,8 @@
 package com.curelingo.curelingo.mongodb;
 
+import com.curelingo.curelingo.mongodb.dto.HospitalBasicDto;
+import com.curelingo.curelingo.mongodb.dto.HospitalDto;
+import com.curelingo.curelingo.mongodb.dto.HospitalRequestDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +21,9 @@ public class HospitalController implements HospitalSwagger {
     // 단일 병원 저장
     @PostMapping
     @Override
-    public ResponseEntity<HospitalDto> saveHospital(@RequestBody HospitalDto dto) {
+    public ResponseEntity<HospitalDto> saveHospital(@RequestBody HospitalRequestDto requestDto) {
         try {
-            HospitalDto savedHospital = hospitalService.saveHospital(dto);
+            HospitalDto savedHospital = hospitalService.saveHospital(requestDto);
             return ResponseEntity.ok(savedHospital);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(null);

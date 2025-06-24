@@ -1,5 +1,6 @@
-package com.curelingo.curelingo.mongodb;
+package com.curelingo.curelingo.mongodb.dto;
 
+import com.curelingo.curelingo.mongodb.MongoHospital;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Builder;

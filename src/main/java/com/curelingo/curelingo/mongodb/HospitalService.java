@@ -2,6 +2,9 @@ package com.curelingo.curelingo.mongodb;
 
 import com.curelingo.curelingo.egen.dto.HospitalFullInfoItem;
 import com.curelingo.curelingo.egen.EgenService;
+import com.curelingo.curelingo.mongodb.dto.HospitalBasicDto;
+import com.curelingo.curelingo.mongodb.dto.HospitalDto;
+import com.curelingo.curelingo.mongodb.dto.HospitalRequestDto;
 import com.curelingo.curelingo.mongodb.repository.HospitalRepository;
 import com.curelingo.curelingo.translation.GoogleTranslationService;
 import org.springframework.stereotype.Service;
@@ -24,7 +27,9 @@ public class HospitalService {
         this.translationService = translationService;
     }
 
-    public HospitalDto saveHospital(HospitalDto dto) {
+    public HospitalDto saveHospital(HospitalRequestDto requestDto) {
+        HospitalDto dto = requestDto.toHospitalDto();
+        
         if (hospitalRepository.existsByHpid(dto.getHpid())) {
             // 이미 존재하는 병원이면 기존 데이터 반환
             MongoHospital existing = hospitalRepository.findById(dto.getHpid()).orElse(null);

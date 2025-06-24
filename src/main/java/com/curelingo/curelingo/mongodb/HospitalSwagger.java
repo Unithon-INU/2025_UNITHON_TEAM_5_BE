@@ -1,5 +1,8 @@
 package com.curelingo.curelingo.mongodb;
 
+import com.curelingo.curelingo.mongodb.dto.HospitalBasicDto;
+import com.curelingo.curelingo.mongodb.dto.HospitalDto;
+import com.curelingo.curelingo.mongodb.dto.HospitalRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,7 +20,7 @@ public interface HospitalSwagger {
             summary = "단일 병원 정보 저장",
             description = "단일 병원 정보를 MongoDB에 저장합니다."
     )
-    ResponseEntity<HospitalDto> saveHospital(@RequestBody HospitalDto dto);
+    ResponseEntity<HospitalDto> saveHospital(@RequestBody HospitalRequestDto requestDto);
 
     @Operation(
             summary = "병원 전체 자동 저장 (다국어 번역 포함)",
