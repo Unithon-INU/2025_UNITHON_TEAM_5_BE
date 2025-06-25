@@ -18,5 +18,5 @@ RUN ./gradlew build -x test --no-daemon
 # 2. Run Stage
 FROM eclipse-temurin:17
 VOLUME /app
-COPY --from=build /home/gradle/project/build/libs/*.jar app.jar
+COPY --from=build /home/gradle/project/build/libs/curelingo-0.0.1-SNAPSHOT.jar app.jar
 ENTRYPOINT ["java", "-jar", "/app.jar"]

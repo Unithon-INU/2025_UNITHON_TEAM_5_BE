@@ -4,6 +4,7 @@ import com.curelingo.curelingo.egen.dto.ClinicItem;
 import com.curelingo.curelingo.egen.EgenService;
 import com.curelingo.curelingo.egen.dto.EgenResponse;
 import com.curelingo.curelingo.mongodb.repository.HospitalRepository;
+import com.curelingo.curelingo.translation.TranslationService;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -14,10 +15,12 @@ public class HospitalService {
 
     private final HospitalRepository hospitalRepository;
     private final EgenService egenService;
+    private final TranslationService translationService;
 
-    public HospitalService(HospitalRepository hospitalRepository, EgenService egenService) {
+    public HospitalService(HospitalRepository hospitalRepository, EgenService egenService, TranslationService translationService) {
         this.hospitalRepository = hospitalRepository;
         this.egenService = egenService;
+        this.translationService = translationService;
     }
 
     public void saveHospital(HospitalDto dto) {
@@ -37,6 +40,10 @@ public class HospitalService {
                 }
             }
         }
+
+        // 영문 번역
+        String dutyNameEn = translationService.translateToEnglish(dto.getDutyName());
+        String dutyAddrEn = translationService.translateToEnglish(dto.getDutyAddr());
 
         MongoHospital mongoHospital = MongoHospital.builder()
                 .hpid(dto.getHpid())
@@ -67,6 +74,8 @@ public class HospitalService {
                 .wgs84Lon(dto.getWgs84Lon())
                 .rnum(dto.getRnum())
                 .departments(departments)
+                .dutyNameEn(dutyNameEn)
+                .dutyAddrEn(dutyAddrEn)
                 .build();
 
         hospitalRepository.save(mongoHospital);
@@ -211,6 +220,25 @@ public class HospitalService {
                         departments.add(qd);
                     }
 
+                    // 영문 번역 (기존 데이터가 있으면 기존 영문 필드 사용, 없으면 번역)
+                    String dutyNameEn, dutyAddrEn;
+                    if (existing != null) {
+                        dutyNameEn = existing.getDutyNameEn();
+                        dutyAddrEn = existing.getDutyAddrEn();
+                    } else {
+                        String originalName = safeString(item.getDutyName());
+                        String originalAddr = safeString(item.getDutyAddr());
+                        
+                        System.out.println("  [번역] 병원명: '" + originalName + "' -> 번역 시작");
+                        System.out.println("  [번역] 주소: '" + originalAddr + "' -> 번역 시작");
+                        
+                        dutyNameEn = translationService.translateToEnglish(originalName);
+                        dutyAddrEn = translationService.translateToEnglish(originalAddr);
+                        
+                        System.out.println("  [번역] 병원명 결과: '" + originalName + "' -> '" + dutyNameEn + "'");
+                        System.out.println("  [번역] 주소 결과: '" + originalAddr + "' -> '" + dutyAddrEn + "'");
+                    }
+
                     // Hospital 엔티티 생성 (기존 데이터 유지하면서 진료과만 업데이트)
                     MongoHospital mongoHospital = MongoHospital.builder()
                             .hpid(item.getHpid())
@@ -241,6 +269,8 @@ public class HospitalService {
                             .wgs84Lon(existing != null ? existing.getWgs84Lon() : item.getWgs84Lon())
                             .rnum(existing != null ? existing.getRnum() : safeString(item.getRnum()))
                             .departments(departments)
+                            .dutyNameEn(dutyNameEn)
+                            .dutyAddrEn(dutyAddrEn)
                             .build();
 
                     // 저장 전 최종 검증

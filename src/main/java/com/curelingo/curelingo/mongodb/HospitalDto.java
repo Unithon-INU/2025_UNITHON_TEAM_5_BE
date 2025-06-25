@@ -17,6 +17,8 @@ public class HospitalDto {
     private String dutyTel1;
     private String dutyTel3;
     private String dutyEtc;
+    private String dutyNameEn; // 기관명 (영문)
+    private String dutyAddrEn; // 주소 (영문)
     private String dutyTime1s;
     private String dutyTime1c;
     private String dutyTime2s;
