@@ -16,11 +16,6 @@ import java.util.List;
 @Tag(name = "응급의료기관 API", description = "응급상황 병원 추천 및 인근 응급실 조회 서비스를 제공합니다.")
 public interface EmergencyAdvisorSwagger {
 
-    @Operation(summary = "응급상황 병원 추천", description = "환자의 증상과 위치 정보를 바탕으로 가장 적합한 응급 병원을 추천합니다.")
-    ResponseEntity<EmergencyAdviceResponse> recommend(
-            @Parameter(description = "응급상황 정보 요청") @RequestBody EmergencyAdviceRequest request
-    );
-
     @Operation(summary = "인근 응급실 목록 조회", description = "현재 위치를 기준으로 반경 N km 이내의 응급실 목록을 조회합니다.")
     ResponseEntity<List<NearbyHospitalDto>> getNearbyHospitals(
             @Parameter(description = "현재 위도", example = "37.5154") @RequestParam double lat,

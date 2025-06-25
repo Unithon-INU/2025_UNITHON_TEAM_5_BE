@@ -31,17 +31,6 @@ public class EmergencyAdvisorService {
     private final HospitalRepository hospitalRepository;
     private final EmergencyBedStatusRepository bedStatusRepository;
 
-    public EmergencyAdviceResponse getRecommendedHospital(EmergencyAdviceRequest request) {
-        String prompt = GeminiEmergencyAdvisorPromptBuilder.buildPrompt(request);
-        GeminiEmergencyAdvisorPromptResponse response = advisorService.getRecommendation(prompt);
-        log.info("[Gemini] Gemini API 응답 결과: {}", response);
-        if (response == null) {
-            log.warn("[Gemini] Gemini API returned null or missing recommended hospital");
-            return new EmergencyAdviceResponse("No recommendation available", "");
-        }
-        return new EmergencyAdviceResponse(response.recommendedHospitalName(), response.recommendedReason());
-    }
-
     public List<NearbyHospitalDto> findNearbyERs(double lat, double lng, double radiusKm) {
         int res = H3ResolutionUtil.chooseResolution(radiusKm);
         int k = H3ResolutionUtil.kFromRadius(radiusKm, res);

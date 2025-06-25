@@ -1,7 +1,5 @@
 package com.curelingo.curelingo.emergencyhospital;
 
-import com.curelingo.curelingo.emergencyhospital.dto.EmergencyAdviceRequest;
-import com.curelingo.curelingo.emergencyhospital.dto.EmergencyAdviceResponse;
 import com.curelingo.curelingo.emergencyhospital.dto.EmergencyBedStatus;
 import com.curelingo.curelingo.emergencyhospital.dto.NearbyHospitalDto;
 import lombok.extern.slf4j.Slf4j;
@@ -18,12 +16,6 @@ import java.util.List;
 public class EmergencyAdvisorController implements EmergencyAdvisorSwagger {
 
     private final EmergencyAdvisorService emergencyAdvisorService;
-
-    @PostMapping("/suggestion")
-    public ResponseEntity<EmergencyAdviceResponse> recommend(@RequestBody EmergencyAdviceRequest request) {
-        EmergencyAdviceResponse response = emergencyAdvisorService.getRecommendedHospital(request);
-        return ResponseEntity.ok(response);
-    }
 
     @GetMapping("/nearby")
     public ResponseEntity<List<NearbyHospitalDto>> getNearbyHospitals(
