@@ -438,6 +438,53 @@ public class HospitalService {
     /**
      * 중복된 hpid 데이터 정리 (첫 번째만 남기고 나머지 삭제)
      */
+    /**
+     * hpid 기준으로 병원 상세정보 조회
+     *
+     * @param hpid 병원 고유 ID
+     * @return 병원 상세정보 (HospitalDto)
+     */
+    public HospitalDto getHospitalDetailByHpid(String hpid) {
+        MongoHospital mongoHospital = hospitalRepository.findById(hpid).orElse(null);
+        
+        if (mongoHospital == null) {
+            return null;
+        }
+        
+        return HospitalDto.builder()
+                .hpid(mongoHospital.getHpid())
+                .dutyName(mongoHospital.getDutyName())
+                .dutyAddr(mongoHospital.getDutyAddr())
+                .dutyDivNam(mongoHospital.getDutyDivNam())
+                .departments(mongoHospital.getDepartments())
+                .dutyEryn(mongoHospital.getDutyEryn())
+                .dutyTel1(mongoHospital.getDutyTel1())
+                .dutyTel3(mongoHospital.getDutyTel3())
+                .dutyEtc(mongoHospital.getDutyEtc())
+                .dutyNameEn(mongoHospital.getDutyNameEn())
+                .dutyAddrEn(mongoHospital.getDutyAddrEn())
+                .dutyTime1s(mongoHospital.getDutyTime1s())
+                .dutyTime1c(mongoHospital.getDutyTime1c())
+                .dutyTime2s(mongoHospital.getDutyTime2s())
+                .dutyTime2c(mongoHospital.getDutyTime2c())
+                .dutyTime3s(mongoHospital.getDutyTime3s())
+                .dutyTime3c(mongoHospital.getDutyTime3c())
+                .dutyTime4s(mongoHospital.getDutyTime4s())
+                .dutyTime4c(mongoHospital.getDutyTime4c())
+                .dutyTime5s(mongoHospital.getDutyTime5s())
+                .dutyTime5c(mongoHospital.getDutyTime5c())
+                .dutyTime6s(mongoHospital.getDutyTime6s())
+                .dutyTime6c(mongoHospital.getDutyTime6c())
+                .dutyTime7s(mongoHospital.getDutyTime7s())
+                .dutyTime7c(mongoHospital.getDutyTime7c())
+                .dutyTime8s(mongoHospital.getDutyTime8s())
+                .dutyTime8c(mongoHospital.getDutyTime8c())
+                .wgs84Lat(mongoHospital.getWgs84Lat())
+                .wgs84Lon(mongoHospital.getWgs84Lon())
+                .rnum(mongoHospital.getRnum())
+                .build();
+    }
+
     public String cleanDuplicateData() {
         List<MongoHospital> allHospitals = hospitalRepository.findAll();
         Map<String, List<MongoHospital>> groupedByHpid = allHospitals.stream()
