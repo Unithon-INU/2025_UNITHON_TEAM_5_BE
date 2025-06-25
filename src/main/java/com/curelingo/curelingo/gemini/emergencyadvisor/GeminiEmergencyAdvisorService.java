@@ -26,9 +26,7 @@ public class GeminiEmergencyAdvisorService {
      */
     public GeminiEmergencyAdvisorPromptResponse getRecommendation(String prompt) {
         Map<String, Object> payload = buildEmergencyRecommendationPayload(prompt);
-        // log.info("[GeminiEmergencyAdvisorService] Built payload for Gemini emergency recommendation: {}", payload);
         String rawResponse = geminiRestClient.callGeminiApi(payload);
-        // log.info("[GeminiEmergencyAdvisorService] Raw Gemini API response: {}", rawResponse);
         try {
             // Extract the JSON string from candidates[0].content.parts[0].text
             JsonNode jsonNode = objectMapper.readTree(rawResponse);
