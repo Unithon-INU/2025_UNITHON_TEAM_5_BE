@@ -117,8 +117,8 @@ public class EgenService {
         try {
             URI uri = new URI(url);
             String responseStr = restTemplate.getForObject(uri, String.class);
-            log.info("Request URI: {}", uri);
-            log.info("Response: {}", responseStr);
+            log.debug("Request URI: {}", uri);
+            // log.debug("Response: {}", responseStr); // 응답 데이터는 너무 크므로 주석 처리
 
             ObjectMapper mapper = new ObjectMapper();
             JavaType responseType = mapper.getTypeFactory()
