@@ -13,7 +13,7 @@ public class ClinicItem {
     private String dutyAddr;
     private String dutyAddrEn;
     private String dutyDivNam;
-    private String dutyDivNamEn;
+    private String dgidIdNam; // 진료과
     private String dutyEryn;
     private String dutyTel1;
     private String dutyTel3;

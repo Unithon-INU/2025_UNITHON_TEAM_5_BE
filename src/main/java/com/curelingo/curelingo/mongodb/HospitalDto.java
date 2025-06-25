@@ -12,6 +12,7 @@ public class HospitalDto {
     private String dutyName;
     private String dutyAddr;
     private String dutyDivNam;
+    private List<String> departments; // 진료과목 목록
     private String dutyEryn;
     private String dutyTel1;
     private String dutyTel3;
@@ -35,7 +36,4 @@ public class HospitalDto {
     private Double wgs84Lat;
     private Double wgs84Lon;
     private String rnum;
-    
-    // 진료과목 목록 (한 병원에 여러 진료과가 있을 수 있음)
-    private List<String> departments;
 }

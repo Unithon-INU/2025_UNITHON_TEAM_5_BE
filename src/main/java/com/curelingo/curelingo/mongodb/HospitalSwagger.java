@@ -23,7 +23,7 @@ public interface HospitalSwagger {
                     "중복(`hpid`)은 저장되지 않습니다. 페이지네이션을 통해 모든 데이터를 가져옵니다."
     )
     ResponseEntity<String> saveHospitalMongo(
-            @Parameter(description = "진료과목 코드 (예: D001=내과, D002=신경과)", example = "D001") 
+            @Parameter(description = "진료과목 코드 (예: D001=내과). 생략 시 D001~D032 모든 진료과 자동 수집") 
             @RequestParam(required = false) String qd
     );
 
@@ -32,4 +32,23 @@ public interface HospitalSwagger {
             description = "MongoDB에 저장된 모든 병원 데이터를 삭제합니다."
     )
     ResponseEntity<String> deleteAllHospitals();
+
+    @Operation(
+            summary = "중복 데이터 체크",
+            description = "MongoDB에 저장된 병원 데이터의 중복 현황을 분석합니다.\n" +
+                    "• hpid 중복 체크\n" +
+                    "• 병원명 중복 현황\n" +
+                    "• 진료과 통계\n" +
+                    "• 전체 데이터 요약"
+    )
+    ResponseEntity<String> checkDuplicateData();
+
+    @Operation(
+            summary = "중복 데이터 정리",
+            description = "중복된 hpid를 가진 병원 데이터를 정리합니다.\n" +
+                    "• 같은 hpid의 중복 레코드 병합\n" +
+                    "• 진료과 목록 통합\n" +
+                    "• 불필요한 중복 레코드 삭제"
+    )
+    ResponseEntity<String> cleanDuplicateData();
 }

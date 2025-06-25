@@ -46,4 +46,26 @@ public class HospitalController implements HospitalSwagger {
             return ResponseEntity.internalServerError().body("병원 데이터 삭제 중 오류가 발생했습니다: " + e.getMessage());
         }
     }
+
+    // 중복 데이터 체크
+    @GetMapping("/check-duplicates")
+    public ResponseEntity<String> checkDuplicateData() {
+        try {
+            String result = hospitalService.checkDuplicateData();
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("중복 데이터 체크 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
+
+    // 중복 데이터 정리
+    @PostMapping("/clean-duplicates")
+    public ResponseEntity<String> cleanDuplicateData() {
+        try {
+            String result = hospitalService.cleanDuplicateData();
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("중복 데이터 정리 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
 }
