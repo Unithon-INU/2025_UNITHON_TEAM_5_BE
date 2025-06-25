@@ -1,44 +1,35 @@
 package com.curelingo.curelingo.gemini.prompt;
 
-import com.curelingo.curelingo.emergencyhospital.dto.EmergencyAdviceRequest;
-import com.curelingo.curelingo.emergencyhospital.dto.HospitalCandidate;
+import com.curelingo.curelingo.emergencyhospital.dto.EmergencyBedStatus;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
+import java.util.Map;
 
-/**
- * Gemini에게 응급 병원 추천 요청을 위한 프롬프트를 생성하는 유틸리티 클래스입니다.
- * 각 병원의 다양한 정보를 나열한 줄글 형태의 설명을 모델에게 전달합니다.
- */
 public class GeminiEmergencyAdvisorPromptBuilder {
-
-    public static String buildPrompt(EmergencyAdviceRequest request) {
-        StringBuilder prompt = new StringBuilder("응급실 후보 병원 목록:\n");
-
-        List<HospitalCandidate> hospitals = request.candidates();
-        for (int i = 0; i < hospitals.size(); i++) {
-            HospitalCandidate h = hospitals.get(i);
-            prompt.append(String.format(
-                    "%d. %s (전화번호: %s, 입원실 수: %s, 일반 중환자실: %s, 내과계 중환자실: %s, " +
-                            "외과계 중환자실: %s, 신경계 병동 여부: %s, CT 가용 여부: %s, MRI 가용 여부: %s, " +
-                            "인공호흡기 가용 여유: %s, 구급차 가용 여부: %s)\n",
-                    i + 1,
-                    h.dutyName(),
-                    h.dutyTel3(),
-                    h.inpatientRoom(),
-                    h.generalICU(),
-                    h.internalMedicineICU(),
-                    h.surgicalICU(),
-                    h.neurologyWard(),
-                    h.ctAvailable(),
-                    h.mriAvailable(),
-                    h.ventilatorAvailable(),
-                    h.ambulanceAvailable()
-            ));
+    /**
+     * 인근 병원 가용병상 정보로 Gemini에게 프롬프트를 구성.
+     * beds, hpid, distanceKm만 포함 (tel, 이름 등은 제외)
+     */
+    public static String buildPrompt(List<EmergencyBedStatus> beds) {
+        StringBuilder sb = new StringBuilder();
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String bedsJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(
+                    beds.stream().map(b -> Map.of(
+                            "hpid", b.getHpid(),
+                            "distanceKm", b.getDistanceKm(),
+                            "beds", b.getBeds()
+                    )).toList()
+            );
+            sb.append("다음은 현위치 기준 가까운 응급실의 HPID, 거리, 그리고 가용병상 정보입니다.\n\n");
+            sb.append("각 병원은 아래와 같습니다:\n");
+            sb.append(bedsJson);
+            sb.append("\n\n이 중에서 가용병상(여유)과 거리 모두를 고려해 가장 추천하는 응급실 한 곳의 hpid와 추천 이유를 JSON으로 답변하세요.\n");
+            sb.append("응답 예시: {\"hpid\": \"선택한병원HPID\", \"recommendedReason\": \"추천이유(한문장)\"}\n");
+        } catch (Exception e) {
+            sb.append("병원 정보 변환 실패");
         }
-        prompt.append("\nChoose the best hospital and briefly explain why (one short sentence).");
-        prompt.append("\nYou should answer hospital name as  follows: \"Korean Name (English Name)\"." +
-                " and also reason in ONLY English.");
-
-        return prompt.toString();
+        return sb.toString();
     }
 }
