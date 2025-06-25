@@ -7,31 +7,34 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter @Setter
 public class ClinicItem {
-    private String dutyAddr;
-    private String dutyDiv;
-    private String dutyDivNam;
-    private String dutyEmcls;
-    private String dutyEmclsName;
-    private Integer dutyEryn;
-    private String dutyEtc;
-    private String dutyName;
-    private String dutyTel1;
-    private Integer dutyTime1c;
-    private String dutyTime1s;
-    private Integer dutyTime2c;
-    private String dutyTime2s;
-    private Integer dutyTime3c;
-    private String dutyTime3s;
-    private Integer dutyTime4c;
-    private String dutyTime4s;
-    private Integer dutyTime5c;
-    private String dutyTime5s;
-    private Integer dutyTime6c;
-    private String dutyTime6s;
     private String hpid;
-    private String postCdn1;
-    private String postCdn2;
-    private Integer rnum;
+    private String dutyName;
+    private String dutyNameEn;
+    private String dutyAddr;
+    private String dutyAddrEn;
+    private String dutyDivNam;
+    private String dgidIdNam; // 진료과
+    private String dutyEryn;
+    private String dutyTel1;
+    private String dutyTel3;
+    private String dutyEtc;
+    private String dutyTime1s;
+    private String dutyTime1c;
+    private String dutyTime2s;
+    private String dutyTime2c;
+    private String dutyTime3s;
+    private String dutyTime3c;
+    private String dutyTime4s;
+    private String dutyTime4c;
+    private String dutyTime5s;
+    private String dutyTime5c;
+    private String dutyTime6s;
+    private String dutyTime6c;
+    private String dutyTime7s;
+    private String dutyTime7c;
+    private String dutyTime8s;
+    private String dutyTime8c;
     private Double wgs84Lat;
     private Double wgs84Lon;
+    private String rnum;
 }

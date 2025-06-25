@@ -23,10 +23,13 @@ public class HospitalController implements HospitalSwagger {
 
     // 전체 병원 자동 저장
     @PostMapping("/mongo")
-    public ResponseEntity<String> saveHospitalMongo() {
+    public ResponseEntity<String> saveHospitalMongo(@RequestParam(required = false) String qd) {
         try {
-            int count = hospitalService.saveHospitalMongo();
-            return ResponseEntity.ok("성공적으로 " + count + "개의 병원 정보가 저장되었습니다.");
+            int count = hospitalService.saveHospitalMongo(qd);
+            String message = qd != null ? 
+                "진료과목 코드 '" + qd + "'로 " + count + "개의 병원 정보가 저장되었습니다." :
+                "전체 " + count + "개의 병원 정보가 저장되었습니다.";
+            return ResponseEntity.ok(message);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("병원 데이터 저장 중 오류가 발생했습니다: " + e.getMessage());
         }
@@ -41,6 +44,28 @@ public class HospitalController implements HospitalSwagger {
             return ResponseEntity.ok("모든 병원 데이터가 삭제되었습니다.");
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("병원 데이터 삭제 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
+
+    // 중복 데이터 체크
+    @GetMapping("/check-duplicates")
+    public ResponseEntity<String> checkDuplicateData() {
+        try {
+            String result = hospitalService.checkDuplicateData();
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("중복 데이터 체크 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
+
+    // 중복 데이터 정리
+    @PostMapping("/clean-duplicates")
+    public ResponseEntity<String> cleanDuplicateData() {
+        try {
+            String result = hospitalService.cleanDuplicateData();
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("중복 데이터 정리 중 오류가 발생했습니다: " + e.getMessage());
         }
     }
 }
