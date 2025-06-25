@@ -1,4 +1,4 @@
-package com.curelingo.curelingo.gemini.dto;
+package com.curelingo.curelingo.gemini.emergencyadvisor.dto;
 
 import java.util.List;
 
