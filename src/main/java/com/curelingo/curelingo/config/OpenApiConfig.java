@@ -11,6 +11,7 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .addServersItem(new Server().url("https://api.cure-lingo.com"));
+                .addServersItem(new Server().url("https://api.cure-lingo.com"))
+                .addServersItem(new Server().url("http://localhost:8080"));
     }
 }
