@@ -16,7 +16,7 @@ public class EmergencyBedStatus {
     private String dutyName;            // 기관명
     private String dutyTel3;            // 응급실 전화
     private Double distanceKm;          // 거리
-    private LocalDateTime updatedAt;    // 정보 입력 일시ㅋ
+    private LocalDateTime updatedAt;    // 정보 입력 일시
 
     private Beds beds;           // beds를 내부 클래스로 구성
 
