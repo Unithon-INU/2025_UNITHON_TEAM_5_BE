@@ -3,6 +3,8 @@ package com.curelingo.curelingo.mongodb;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @Builder
 public class HospitalDto {
@@ -33,4 +35,7 @@ public class HospitalDto {
     private Double wgs84Lat;
     private Double wgs84Lon;
     private String rnum;
+    
+    // 진료과목 목록 (한 병원에 여러 진료과가 있을 수 있음)
+    private List<String> departments;
 }

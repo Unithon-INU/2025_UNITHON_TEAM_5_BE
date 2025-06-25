@@ -9,8 +9,11 @@ import lombok.Setter;
 public class ClinicItem {
     private String hpid;
     private String dutyName;
+    private String dutyNameEn;
     private String dutyAddr;
+    private String dutyAddrEn;
     private String dutyDivNam;
+    private String dutyDivNamEn;
     private String dutyEryn;
     private String dutyTel1;
     private String dutyTel3;

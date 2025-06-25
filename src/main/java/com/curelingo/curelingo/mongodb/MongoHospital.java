@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Getter
 @Document(collection = "hospital")
 public class MongoHospital {
@@ -40,6 +42,9 @@ public class MongoHospital {
     private final Double wgs84Lat; // 병원위도
     private final Double wgs84Lon; // 병원경도
     private final String rnum; // 일련번호
+    
+    // 진료과목 목록 (한 병원에 여러 진료과가 있을 수 있음)
+    private final List<String> departments;
 
     @Builder
     public MongoHospital(
@@ -69,7 +74,8 @@ public class MongoHospital {
             String dutyTime8c,
             Double wgs84Lat,
             Double wgs84Lon,
-            String rnum
+            String rnum,
+            List<String> departments
     ) {
         this.hpid = hpid;
         this.dutyName = dutyName;
@@ -98,5 +104,6 @@ public class MongoHospital {
         this.wgs84Lat = wgs84Lat;
         this.wgs84Lon = wgs84Lon;
         this.rnum = rnum;
+        this.departments = departments;
     }
 }
