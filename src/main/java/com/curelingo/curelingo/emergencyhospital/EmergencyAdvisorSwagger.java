@@ -1,14 +1,11 @@
 package com.curelingo.curelingo.emergencyhospital;
 
-import com.curelingo.curelingo.emergencyhospital.dto.EmergencyAdviceRequest;
-import com.curelingo.curelingo.emergencyhospital.dto.EmergencyAdviceResponse;
 import com.curelingo.curelingo.emergencyhospital.dto.EmergencyBedStatus;
 import com.curelingo.curelingo.emergencyhospital.dto.NearbyHospitalDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
