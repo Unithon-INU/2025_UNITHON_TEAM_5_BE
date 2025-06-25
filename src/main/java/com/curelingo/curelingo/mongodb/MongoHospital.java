@@ -22,6 +22,10 @@ public class MongoHospital {
     private final String dutyTel3; // 응급실전화
     private final String dutyEtc; // 비고
 
+    // 영문 필드 추가
+    private final String dutyNameEn; // 기관명 (영문)
+    private final String dutyAddrEn; // 주소 (영문)
+
     private final String dutyTime1s; // 진료시간(월요일) open
     private final String dutyTime1c; // 진료시간(월요일) close
     private final String dutyTime2s; // 진료시간(화요일) open
@@ -75,7 +79,9 @@ public class MongoHospital {
             Double wgs84Lat,
             Double wgs84Lon,
             String rnum,
-            List<String> departments
+            List<String> departments,
+            String dutyNameEn,
+            String dutyAddrEn
     ) {
         this.hpid = hpid;
         this.dutyName = dutyName;
@@ -105,5 +111,7 @@ public class MongoHospital {
         this.wgs84Lon = wgs84Lon;
         this.rnum = rnum;
         this.departments = departments;
+        this.dutyNameEn = dutyNameEn;
+        this.dutyAddrEn = dutyAddrEn;
     }
 }
