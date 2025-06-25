@@ -75,14 +75,11 @@ public class ClinicService {
             if (distanceKm <= radiusKm) {
                 result.add(new NearbyClinicDto(
                         clinic.getName(),
+                        clinic.getNameEn(),
                         clinic.getAddr(),
+                        clinic.getAddrEn(),
                         clinic.getHpid(),
-                        clinic.getType(),
-                        clinic.getTel(),
-                        clinic.getLat(),
-                        clinic.getLng(),
-                        distanceKm,
-                        clinic.getDepartments()
+                        distanceKm
                 ));
             }
         }
