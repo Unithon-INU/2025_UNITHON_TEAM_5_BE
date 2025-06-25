@@ -6,6 +6,7 @@ public record NearbyClinicDto(
         String address,
         String addressEn,
         String hpid,
+        String tel,
         double distanceKm
 ) {
 } 

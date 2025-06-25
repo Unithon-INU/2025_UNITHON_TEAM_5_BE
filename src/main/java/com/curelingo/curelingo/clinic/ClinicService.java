@@ -11,9 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -31,9 +30,10 @@ public class ClinicService {
      * @param lat        현재 위도
      * @param lng        현재 경도
      * @param department 진료과 코드 (D001~D032)
+     * @param language   언어 (ko: 한국어, en: 영어)
      * @return 해당 진료과가 있는 인근 병원 목록
      */
-    public List<NearbyClinicDto> findNearbyClinicsByDepartment(double lat, double lng, String department) {
+    public List<Map<String, Object>> findNearbyClinicsByDepartment(double lat, double lng, String department, String language) {
         double radiusKm = 3.0; // 반경 3km 고정
         
         int res = H3ResolutionUtil.chooseResolution(radiusKm);
@@ -67,27 +67,36 @@ public class ClinicService {
         log.info("[Clinic] H3 후보 {} 진료과 병원 개수: {}", department, candidates.size());
 
         // 정확한 거리 계산 및 2차 필터링
-        List<NearbyClinicDto> result = new ArrayList<>();
+        List<Map<String, Object>> result = new ArrayList<>();
         for (Clinic clinic : candidates) {
             double distanceKm = h3Service.calcDistanceKm(lat, lng, clinic.getLat(), clinic.getLng());
             log.debug("[Clinic] {} {} 진료과 거리: {}km", clinic.getName(), department, distanceKm);
             
             if (distanceKm <= radiusKm) {
-                result.add(new NearbyClinicDto(
-                        clinic.getName(),
-                        clinic.getNameEn(),
-                        clinic.getAddr(),
-                        clinic.getAddrEn(),
-                        clinic.getHpid(),
-                        distanceKm
-                ));
+                Map<String, Object> hospitalData = new HashMap<>();
+                
+                if ("en".equals(language)) {
+                    // 영어 응답
+                    hospitalData.put("nameEn", clinic.getNameEn() != null ? clinic.getNameEn() : clinic.getName());
+                    hospitalData.put("addressEn", clinic.getAddrEn() != null ? clinic.getAddrEn() : clinic.getAddr());
+                } else {
+                    // 한국어 응답 (기본값)
+                    hospitalData.put("name", clinic.getName());
+                    hospitalData.put("address", clinic.getAddr());
+                }
+                
+                hospitalData.put("hpid", clinic.getHpid());
+                hospitalData.put("tel", clinic.getTel());
+                hospitalData.put("distanceKm", distanceKm);
+                
+                result.add(hospitalData);
             }
         }
 
         log.info("[Clinic] 반경 {}km 이내 {} 진료과 최종 병원 개수: {}", radiusKm, department, result.size());
         
         // 거리 기준 오름차순 정렬
-        result.sort(Comparator.comparingDouble(NearbyClinicDto::distanceKm));
+        result.sort(Comparator.comparingDouble(data -> (Double) data.get("distanceKm")));
         return result;
     }
 
