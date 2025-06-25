@@ -18,7 +18,7 @@ public class ClinicController implements ClinicSwagger {
 
 
 
-    @GetMapping("/nearby/department")
+    @GetMapping("/department")
     public ResponseEntity<List<NearbyClinicDto>> getNearbyClinicsByDepartment(
             @RequestParam double lat,
             @RequestParam double lng,
