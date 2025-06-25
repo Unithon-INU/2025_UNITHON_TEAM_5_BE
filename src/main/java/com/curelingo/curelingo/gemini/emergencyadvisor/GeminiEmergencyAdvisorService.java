@@ -1,7 +1,7 @@
-package com.curelingo.curelingo.gemini.service;
+package com.curelingo.curelingo.gemini.emergencyadvisor;
 
 import com.curelingo.curelingo.gemini.GeminiRestClient;
-import com.curelingo.curelingo.gemini.dto.GeminiEmergencyAdvisorPromptResponse;
+import com.curelingo.curelingo.gemini.emergencyadvisor.dto.GeminiEmergencyAdvisorPromptResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
