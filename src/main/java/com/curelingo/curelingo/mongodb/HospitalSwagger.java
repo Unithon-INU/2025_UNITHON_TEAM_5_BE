@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -51,4 +52,13 @@ public interface HospitalSwagger {
                     "• 불필요한 중복 레코드 삭제"
     )
     ResponseEntity<String> cleanDuplicateData();
+
+    @Operation(
+            summary = "병원 상세정보 조회",
+            description = "hpid를 기준으로 병원의 모든 상세정보를 조회합니다." 
+    )
+    ResponseEntity<HospitalDto> getHospitalDetail(
+            @Parameter(description = "병원 고유 ID", example = "A1122465") 
+            @PathVariable String hpid
+    );
 }

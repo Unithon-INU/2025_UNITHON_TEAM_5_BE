@@ -68,4 +68,20 @@ public class HospitalController implements HospitalSwagger {
             return ResponseEntity.internalServerError().body("중복 데이터 정리 중 오류가 발생했습니다: " + e.getMessage());
         }
     }
+
+    // hpid로 병원 상세정보 조회
+    @GetMapping("/{hpid}")
+    @Override
+    public ResponseEntity<HospitalDto> getHospitalDetail(@PathVariable String hpid) {
+        try {
+            HospitalDto hospitalDetail = hospitalService.getHospitalDetailByHpid(hpid);
+            if (hospitalDetail != null) {
+                return ResponseEntity.ok(hospitalDetail);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }
