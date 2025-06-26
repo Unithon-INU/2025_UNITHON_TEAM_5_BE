@@ -25,19 +25,28 @@ public class EmergencyAdvisorService {
     private final HospitalRepository hospitalRepository;
     private final EmergencyBedStatusRepository bedStatusRepository;
 
-    public List<NearbyHospitalDto> findNearbyERs(double lat, double lng, double radiusKm) {
+    public List<Map<String, Object>> findNearbyERs(double lat, double lon, double radiusKm, String language) {
         int res = H3ResolutionUtil.chooseResolution(radiusKm);
         int k = H3ResolutionUtil.kFromRadius(radiusKm, res);
-        log.info("[Hospital] 반경 {}km → res={}, k={}", radiusKm, res, k);
+        log.info("[Emergency] 반경 {}km, 언어: {} → res={}, k={}", radiusKm, language, res, k);
 
         List<MongoHospital> mongoHospitals = hospitalRepository.findByDutyEryn("1");
         List<Hospital> hospitals = mongoHospitals.stream()
-                .map(HospitalMapper::toDomain)
+                .map(m -> Hospital.builder()
+                        .hpid(m.getHpid())
+                        .name(m.getDutyName())
+                        .nameEn(m.getDutyNameEn())
+                        .addr(m.getDutyAddr())
+                        .addrEn(m.getDutyAddrEn())
+                        .tel(m.getDutyTel1())
+                        .lat(m.getWgs84Lat())
+                        .lng(m.getWgs84Lon())
+                        .build())
                 .toList();
 
-        String userCell = h3Service.latLngToCell(lat, lng, res);
+        String userCell = h3Service.latLngToCell(lat, lon, res);
         List<String> neighborCells = h3Service.gridDisk(userCell, k);
-        log.info("[Hospital] gridDisk 결과 셀 개수: {}", neighborCells.size());
+        log.info("[Emergency] gridDisk 결과 셀 개수: {}", neighborCells.size());
 
         List<Hospital> candidates = new ArrayList<>();
         for (Hospital h : hospitals) {
@@ -46,18 +55,37 @@ public class EmergencyAdvisorService {
                 candidates.add(h);
             }
         }
-        log.info("[Hospital] H3 후보 응급실 개수: {}", candidates.size());
+        log.info("[Emergency] H3 후보 응급실 개수: {}", candidates.size());
 
-        List<NearbyHospitalDto> result = new ArrayList<>();
+        List<Map<String, Object>> result = new ArrayList<>();
         for (Hospital h : candidates) {
-            double distanceKm = h3Service.calcDistanceKm(lat, lng, h.getLat(), h.getLng());
-            log.debug("[Hospital] {} 거리: {}", h.getName(), distanceKm);
+            double distanceKm = h3Service.calcDistanceKm(lat, lon, h.getLat(), h.getLng());
+            log.debug("[Emergency] {} 거리: {}km", h.getName(), distanceKm);
+            
             if (distanceKm <= radiusKm) {
-                result.add(new NearbyHospitalDto(h.getName(), h.getAddr(), h.getHpid(), h.getLat(), h.getLng(), distanceKm));
+                Map<String, Object> hospitalData = new HashMap<>();
+                
+                if ("en".equals(language)) {
+                    // 영어 응답
+                    hospitalData.put("nameEn", h.getNameEn() != null ? h.getNameEn() : h.getName());
+                    hospitalData.put("addressEn", h.getAddrEn() != null ? h.getAddrEn() : h.getAddr());
+                } else {
+                    // 한국어 응답 (기본값)
+                    hospitalData.put("name", h.getName());
+                    hospitalData.put("address", h.getAddr());
+                }
+                
+                hospitalData.put("hpid", h.getHpid());
+                hospitalData.put("lat", h.getLat());
+                hospitalData.put("lng", h.getLng());
+                hospitalData.put("distanceKm", distanceKm);
+                
+                result.add(hospitalData);
             }
         }
-        log.info("[Hospital] 반경 {}km 이내 최종 병원 개수: {}", radiusKm, result.size());
-        result.sort(Comparator.comparingDouble(NearbyHospitalDto::distanceKm));
+        
+        log.info("[Emergency] 반경 {}km 이내 최종 응급실 개수: {}", radiusKm, result.size());
+        result.sort(Comparator.comparingDouble(data -> (Double) data.get("distanceKm")));
         return result;
     }
 
