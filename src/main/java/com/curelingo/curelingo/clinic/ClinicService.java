@@ -69,7 +69,11 @@ public class ClinicService {
             log.debug("[Clinic] {} {} 진료과 거리: {}km", clinic.getName(), department, distanceKm);
             
             if (distanceKm <= radiusKm) {
-                Map<String, Object> hospitalData = new HashMap<>();
+                // LinkedHashMap을 사용하여 필드 순서 보장
+                Map<String, Object> hospitalData = new LinkedHashMap<>();
+                
+                // 1. 기본 정보
+                hospitalData.put("hpid", clinic.getHpid());
                 
                 if ("en".equals(language)) {
                     // 영어 응답
@@ -81,13 +85,14 @@ public class ClinicService {
                     hospitalData.put("address", clinic.getAddr());
                 }
                 
-                hospitalData.put("hpid", clinic.getHpid());
                 hospitalData.put("tel", clinic.getTel());
+                
+                // 2. 위치 정보
                 hospitalData.put("lat", clinic.getLat());
                 hospitalData.put("lng", clinic.getLng());
                 hospitalData.put("distanceKm", distanceKm);
                 
-                // 운영시간 정보 추가
+                // 3. 운영시간 정보 (요일 순서대로)
                 hospitalData.put("dutyTime1s", clinic.getDutyTime1s()); // 월요일 시작
                 hospitalData.put("dutyTime1c", clinic.getDutyTime1c()); // 월요일 종료
                 hospitalData.put("dutyTime2s", clinic.getDutyTime2s()); // 화요일 시작
