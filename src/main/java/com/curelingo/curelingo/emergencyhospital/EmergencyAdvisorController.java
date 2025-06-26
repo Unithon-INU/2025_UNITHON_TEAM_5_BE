@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/emergency-hospitals")
+@RequestMapping("/api/emergency")
 @RequiredArgsConstructor
 public class EmergencyAdvisorController implements EmergencyAdvisorSwagger {
 
