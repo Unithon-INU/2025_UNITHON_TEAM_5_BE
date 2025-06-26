@@ -1,7 +1,6 @@
 package com.curelingo.curelingo.clinic;
 
 import com.curelingo.curelingo.clinic.domain.Clinic;
-import com.curelingo.curelingo.clinic.dto.NearbyClinicDto;
 import com.curelingo.curelingo.clinic.mapper.ClinicMapper;
 import com.curelingo.curelingo.location.H3ResolutionUtil;
 import com.curelingo.curelingo.location.H3Service;
@@ -12,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -21,8 +19,6 @@ public class ClinicService {
 
     private final H3Service h3Service;
     private final HospitalRepository hospitalRepository;
-
-
 
     /**
      * 진료과별 필터링된 인근 병원 검색 (반경 3km 고정)
@@ -99,6 +95,4 @@ public class ClinicService {
         result.sort(Comparator.comparingDouble(data -> (Double) data.get("distanceKm")));
         return result;
     }
-
-
 } 

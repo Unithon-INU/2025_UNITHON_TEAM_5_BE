@@ -8,22 +8,25 @@ import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/emergency")
+@RequestMapping("/api/emergency-hospitals")
 @RequiredArgsConstructor
 public class EmergencyAdvisorController implements EmergencyAdvisorSwagger {
 
     private final EmergencyAdvisorService emergencyAdvisorService;
 
     @GetMapping("/nearby")
-    public ResponseEntity<List<NearbyHospitalDto>> getNearbyHospitals(
+    public ResponseEntity<List<Map<String, Object>>> getNearbyHospitals(
             @RequestParam double lat,
-            @RequestParam double lng,
-            @RequestParam double radiusKm
+            @RequestParam double lon,
+            @RequestParam(defaultValue = "ko") String language
     ) {
-        List<NearbyHospitalDto> hospitals = emergencyAdvisorService.findNearbyERs(lat, lng, radiusKm);
+        log.info("[EmergencyController] 응급실 검색 요청 - 위치: ({}, {}), 반경: 5km, 언어: {}", lat, lon, language);
+        List<Map<String, Object>> hospitals = emergencyAdvisorService.findNearbyERs(lat, lon, language);
+        log.info("[EmergencyController] 검색 결과: {}개 응급실", hospitals.size());
         return ResponseEntity.ok(hospitals);
     }
 
