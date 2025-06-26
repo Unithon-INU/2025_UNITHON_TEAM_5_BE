@@ -22,11 +22,10 @@ public class EmergencyAdvisorController implements EmergencyAdvisorSwagger {
     public ResponseEntity<List<Map<String, Object>>> getNearbyHospitals(
             @RequestParam double lat,
             @RequestParam double lon,
-            @RequestParam double radiusKm,
             @RequestParam(defaultValue = "ko") String language
     ) {
-        log.info("[EmergencyController] 응급실 검색 요청 - 위치: ({}, {}), 반경: {}km, 언어: {}", lat, lon, radiusKm, language);
-        List<Map<String, Object>> hospitals = emergencyAdvisorService.findNearbyERs(lat, lon, radiusKm, language);
+        log.info("[EmergencyController] 응급실 검색 요청 - 위치: ({}, {}), 반경: 5km, 언어: {}", lat, lon, language);
+        List<Map<String, Object>> hospitals = emergencyAdvisorService.findNearbyERs(lat, lon, language);
         log.info("[EmergencyController] 검색 결과: {}개 응급실", hospitals.size());
         return ResponseEntity.ok(hospitals);
     }

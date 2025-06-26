@@ -25,7 +25,8 @@ public class EmergencyAdvisorService {
     private final HospitalRepository hospitalRepository;
     private final EmergencyBedStatusRepository bedStatusRepository;
 
-    public List<Map<String, Object>> findNearbyERs(double lat, double lon, double radiusKm, String language) {
+    public List<Map<String, Object>> findNearbyERs(double lat, double lon, String language) {
+        double radiusKm = 5.0; // 반경 5km 고정
         int res = H3ResolutionUtil.chooseResolution(radiusKm);
         int k = H3ResolutionUtil.kFromRadius(radiusKm, res);
         log.info("[Emergency] 반경 {}km, 언어: {} → res={}, k={}", radiusKm, language, res, k);

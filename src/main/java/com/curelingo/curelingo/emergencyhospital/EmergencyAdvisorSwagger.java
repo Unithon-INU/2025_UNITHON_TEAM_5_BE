@@ -14,11 +14,10 @@ import java.util.Map;
 @Tag(name = "응급의료기관 API", description = "응급상황 병원 추천 및 인근 응급실 조회 서비스를 제공합니다.")
 public interface EmergencyAdvisorSwagger {
 
-    @Operation(summary = "인근 응급실 목록 조회", description = "현재 위치를 기준으로 반경 N km 이내의 응급실 목록을 조회합니다.")
+    @Operation(summary = "인근 응급실 목록 조회", description = "현재 위치를 기준으로 반경 5km 이내의 응급실 목록을 조회합니다.")
     ResponseEntity<List<Map<String, Object>>> getNearbyHospitals(
             @Parameter(description = "현재 위도", example = "37.5154") @RequestParam double lat,
             @Parameter(description = "현재 경도", example = "127.0346") @RequestParam double lon,
-            @Parameter(description = "검색 반경(km)", example = "5.0") @RequestParam double radiusKm,
             @Parameter(description = "언어 (ko: 한국어, en: 영어)", example = "ko") @RequestParam(defaultValue = "ko") String language
     );
 
