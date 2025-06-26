@@ -55,10 +55,13 @@ public interface HospitalSwagger {
 
     @Operation(
             summary = "병원 상세정보 조회",
-            description = "hpid를 기준으로 병원의 모든 상세정보를 조회합니다." 
+            description = "hpid를 기준으로 병원의 모든 상세정보를 조회합니다. " +
+                         "응답에는 기본 정보와 함께 현재 운영 여부(isOpen)가 포함됩니다."
     )
     ResponseEntity<HospitalDto> getHospitalDetail(
             @Parameter(description = "병원 고유 ID", example = "A1122465") 
-            @PathVariable String hpid
+            @PathVariable String hpid,
+            @Parameter(description = "현재 시간 (ISO 8601 형식, 예: 2024-01-15T14:30:00). 생략 시 서버 현재 시간 사용", example = "2024-01-15T14:30:00") 
+            @RequestParam(required = false) String currentTime
     );
 }
