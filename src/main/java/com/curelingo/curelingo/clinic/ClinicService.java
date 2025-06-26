@@ -87,6 +87,24 @@ public class ClinicService {
                 hospitalData.put("lng", clinic.getLng());
                 hospitalData.put("distanceKm", distanceKm);
                 
+                // 운영시간 정보 추가
+                hospitalData.put("dutyTime1s", clinic.getDutyTime1s()); // 월요일 시작
+                hospitalData.put("dutyTime1c", clinic.getDutyTime1c()); // 월요일 종료
+                hospitalData.put("dutyTime2s", clinic.getDutyTime2s()); // 화요일 시작
+                hospitalData.put("dutyTime2c", clinic.getDutyTime2c()); // 화요일 종료
+                hospitalData.put("dutyTime3s", clinic.getDutyTime3s()); // 수요일 시작
+                hospitalData.put("dutyTime3c", clinic.getDutyTime3c()); // 수요일 종료
+                hospitalData.put("dutyTime4s", clinic.getDutyTime4s()); // 목요일 시작
+                hospitalData.put("dutyTime4c", clinic.getDutyTime4c()); // 목요일 종료
+                hospitalData.put("dutyTime5s", clinic.getDutyTime5s()); // 금요일 시작
+                hospitalData.put("dutyTime5c", clinic.getDutyTime5c()); // 금요일 종료
+                hospitalData.put("dutyTime6s", clinic.getDutyTime6s()); // 토요일 시작
+                hospitalData.put("dutyTime6c", clinic.getDutyTime6c()); // 토요일 종료
+                hospitalData.put("dutyTime7s", clinic.getDutyTime7s()); // 일요일 시작
+                hospitalData.put("dutyTime7c", clinic.getDutyTime7c()); // 일요일 종료
+                hospitalData.put("dutyTime8s", clinic.getDutyTime8s()); // 공휴일 시작
+                hospitalData.put("dutyTime8c", clinic.getDutyTime8c()); // 공휴일 종료
+                
                 result.add(hospitalData);
             }
         }

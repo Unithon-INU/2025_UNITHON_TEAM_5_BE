@@ -18,6 +18,23 @@ public class ClinicMapper {
                 .type(determineClinicType(mongoHospital))
                 .departments(mongoHospital.getDepartments())  // 진료과목 목록 추가
                 .h3Cell(null)  // H3 셀 정보는 별도 계산 필요
+                // 운영시간 필드들 매핑 추가
+                .dutyTime1s(mongoHospital.getDutyTime1s())
+                .dutyTime1c(mongoHospital.getDutyTime1c())
+                .dutyTime2s(mongoHospital.getDutyTime2s())
+                .dutyTime2c(mongoHospital.getDutyTime2c())
+                .dutyTime3s(mongoHospital.getDutyTime3s())
+                .dutyTime3c(mongoHospital.getDutyTime3c())
+                .dutyTime4s(mongoHospital.getDutyTime4s())
+                .dutyTime4c(mongoHospital.getDutyTime4c())
+                .dutyTime5s(mongoHospital.getDutyTime5s())
+                .dutyTime5c(mongoHospital.getDutyTime5c())
+                .dutyTime6s(mongoHospital.getDutyTime6s())
+                .dutyTime6c(mongoHospital.getDutyTime6c())
+                .dutyTime7s(mongoHospital.getDutyTime7s())
+                .dutyTime7c(mongoHospital.getDutyTime7c())
+                .dutyTime8s(mongoHospital.getDutyTime8s())
+                .dutyTime8c(mongoHospital.getDutyTime8c())
                 .build();
     }
 
