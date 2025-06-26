@@ -19,6 +19,7 @@ public class HospitalDto {
     private String dutyEtc;
     private String dutyNameEn; // 기관명 (영문)
     private String dutyAddrEn; // 주소 (영문)
+    private Boolean isOpen; // 현재 운영 여부
     private String dutyTime1s;
     private String dutyTime1c;
     private String dutyTime2s;
