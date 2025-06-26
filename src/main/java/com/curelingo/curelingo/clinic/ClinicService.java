@@ -83,6 +83,8 @@ public class ClinicService {
                 
                 hospitalData.put("hpid", clinic.getHpid());
                 hospitalData.put("tel", clinic.getTel());
+                hospitalData.put("lat", clinic.getLat());
+                hospitalData.put("lng", clinic.getLng());
                 hospitalData.put("distanceKm", distanceKm);
                 
                 result.add(hospitalData);
