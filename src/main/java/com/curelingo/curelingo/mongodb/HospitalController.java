@@ -3,6 +3,9 @@ package com.curelingo.curelingo.mongodb;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @RestController
 @RequestMapping("/api/hospitals")
 public class HospitalController implements HospitalSwagger {
@@ -72,9 +75,24 @@ public class HospitalController implements HospitalSwagger {
     // hpid로 병원 상세정보 조회
     @GetMapping("/{hpid}")
     @Override
-    public ResponseEntity<HospitalDto> getHospitalDetail(@PathVariable String hpid) {
+    public ResponseEntity<HospitalDto> getHospitalDetail(
+            @PathVariable String hpid,
+            @RequestParam(required = false) String currentTime
+    ) {
         try {
-            HospitalDto hospitalDetail = hospitalService.getHospitalDetailByHpid(hpid);
+            // 현재 시간 파싱
+            LocalDateTime clientTime = null;
+            if (currentTime != null && !currentTime.isEmpty()) {
+                try {
+                    clientTime = LocalDateTime.parse(currentTime, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                } catch (Exception e) {
+                    clientTime = LocalDateTime.now();
+                }
+            } else {
+                clientTime = LocalDateTime.now();
+            }
+            
+            HospitalDto hospitalDetail = hospitalService.getHospitalDetailByHpid(hpid, clientTime);
             if (hospitalDetail != null) {
                 return ResponseEntity.ok(hospitalDetail);
             } else {

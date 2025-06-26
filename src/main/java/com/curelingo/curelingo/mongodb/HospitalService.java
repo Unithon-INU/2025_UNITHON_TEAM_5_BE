@@ -7,6 +7,9 @@ import com.curelingo.curelingo.mongodb.repository.HospitalRepository;
 import com.curelingo.curelingo.translation.TranslationService;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -439,17 +442,21 @@ public class HospitalService {
      * 중복된 hpid 데이터 정리 (첫 번째만 남기고 나머지 삭제)
      */
     /**
-     * hpid 기준으로 병원 상세정보 조회
+     * hpid 기준으로 병원 상세정보 조회 (운영여부 포함)
      *
      * @param hpid 병원 고유 ID
+     * @param currentTime 현재 시간
      * @return 병원 상세정보 (HospitalDto)
      */
-    public HospitalDto getHospitalDetailByHpid(String hpid) {
+    public HospitalDto getHospitalDetailByHpid(String hpid, LocalDateTime currentTime) {
         MongoHospital mongoHospital = hospitalRepository.findById(hpid).orElse(null);
         
         if (mongoHospital == null) {
             return null;
         }
+        
+        // 운영여부 계산
+        boolean isOpen = isHospitalOpen(mongoHospital, currentTime);
         
         return HospitalDto.builder()
                 .hpid(mongoHospital.getHpid())
@@ -463,6 +470,7 @@ public class HospitalService {
                 .dutyEtc(mongoHospital.getDutyEtc())
                 .dutyNameEn(mongoHospital.getDutyNameEn())
                 .dutyAddrEn(mongoHospital.getDutyAddrEn())
+                .isOpen(isOpen) // 운영여부 추가
                 .dutyTime1s(mongoHospital.getDutyTime1s())
                 .dutyTime1c(mongoHospital.getDutyTime1c())
                 .dutyTime2s(mongoHospital.getDutyTime2s())
@@ -483,6 +491,112 @@ public class HospitalService {
                 .wgs84Lon(mongoHospital.getWgs84Lon())
                 .rnum(mongoHospital.getRnum())
                 .build();
+    }
+
+    /**
+     * 기존 메서드 (하위 호환성을 위해 유지)
+     */
+    public HospitalDto getHospitalDetailByHpid(String hpid) {
+        return getHospitalDetailByHpid(hpid, LocalDateTime.now());
+    }
+    
+    /**
+     * 병원 운영 여부 확인
+     * 
+     * @param mongoHospital 병원 정보
+     * @param currentTime 현재 시간
+     * @return 운영 중이면 true, 아니면 false
+     */
+    private boolean isHospitalOpen(MongoHospital mongoHospital, LocalDateTime currentTime) {
+        DayOfWeek dayOfWeek = currentTime.getDayOfWeek();
+        LocalTime currentLocalTime = currentTime.toLocalTime();
+        
+        String openTime = null;
+        String closeTime = null;
+        
+        // 요일별 운영시간 가져오기
+        switch (dayOfWeek) {
+            case MONDAY:
+                openTime = mongoHospital.getDutyTime1s();
+                closeTime = mongoHospital.getDutyTime1c();
+                break;
+            case TUESDAY:
+                openTime = mongoHospital.getDutyTime2s();
+                closeTime = mongoHospital.getDutyTime2c();
+                break;
+            case WEDNESDAY:
+                openTime = mongoHospital.getDutyTime3s();
+                closeTime = mongoHospital.getDutyTime3c();
+                break;
+            case THURSDAY:
+                openTime = mongoHospital.getDutyTime4s();
+                closeTime = mongoHospital.getDutyTime4c();
+                break;
+            case FRIDAY:
+                openTime = mongoHospital.getDutyTime5s();
+                closeTime = mongoHospital.getDutyTime5c();
+                break;
+            case SATURDAY:
+                openTime = mongoHospital.getDutyTime6s();
+                closeTime = mongoHospital.getDutyTime6c();
+                break;
+            case SUNDAY:
+                openTime = mongoHospital.getDutyTime7s();
+                closeTime = mongoHospital.getDutyTime7c();
+                break;
+        }
+        
+        // 운영시간이 없으면 휴무
+        if (openTime == null || closeTime == null || openTime.isEmpty() || closeTime.isEmpty()) {
+            return false;
+        }
+        
+        try {
+            // 시간 문자열을 LocalTime으로 변환 ("0900" -> 09:00)
+            LocalTime openLocalTime = parseTimeString(openTime);
+            LocalTime closeLocalTime = parseTimeString(closeTime);
+            
+            // 24시간 운영인 경우 (예: "0000" - "2400" 또는 같은 시간)
+            if (openLocalTime.equals(closeLocalTime) || 
+                (openTime.equals("0000") && (closeTime.equals("2400") || closeTime.equals("0000")))) {
+                return true;
+            }
+            
+            // 일반적인 경우: 시작 시간 <= 현재 시간 < 종료 시간
+            if (closeLocalTime.isAfter(openLocalTime)) {
+                // 같은 날 내에서 운영 (예: 09:00 - 18:00)
+                return !currentLocalTime.isBefore(openLocalTime) && currentLocalTime.isBefore(closeLocalTime);
+            } else {
+                // 자정을 넘어 운영 (예: 22:00 - 06:00)
+                return !currentLocalTime.isBefore(openLocalTime) || currentLocalTime.isBefore(closeLocalTime);
+            }
+            
+        } catch (Exception e) {
+            System.err.println("[Hospital] 운영시간 파싱 오류 - 병원: " + mongoHospital.getDutyName() + ", 시간: " + openTime + " - " + closeTime);
+            return false;
+        }
+    }
+    
+    /**
+     * 시간 문자열을 LocalTime으로 변환
+     * 
+     * @param timeString "0900", "1830" 형식의 시간 문자열
+     * @return LocalTime 객체
+     */
+    private LocalTime parseTimeString(String timeString) {
+        if (timeString == null || timeString.length() != 4) {
+            throw new IllegalArgumentException("Invalid time format: " + timeString);
+        }
+        
+        int hour = Integer.parseInt(timeString.substring(0, 2));
+        int minute = Integer.parseInt(timeString.substring(2, 4));
+        
+        // 2400을 0000으로 처리
+        if (hour == 24) {
+            hour = 0;
+        }
+        
+        return LocalTime.of(hour, minute);
     }
 
     public String cleanDuplicateData() {
