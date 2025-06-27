@@ -25,8 +25,9 @@ public class GeminiController implements GeminiSwagger {
     public GeminiEmergencyRecommendationResponse recommendEmergency(
             @RequestParam double lat,
             @RequestParam double lng,
-            @RequestParam double radiusKm
+            @RequestParam double radiusKm,
+            @RequestParam(defaultValue = "ko") String language
     ) {
-        return emergencyAdvisorService.recommendNearbyEmergency(lat, lng, radiusKm);
+        return emergencyAdvisorService.recommendNearbyEmergency(lat, lng, radiusKm, language);
     }
 }
