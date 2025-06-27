@@ -62,12 +62,12 @@ public class GeminiEmergencyAdvisorService {
     }
 
     public GeminiEmergencyRecommendationResponse recommendNearbyEmergency(
-            double lat, double lng, double radiusKm
+            double lat, double lng, double radiusKm, String language
     ) {
         List<EmergencyBedStatus> candidates = findNearbyEmergencyBeds(lat, lng, radiusKm);
 
         // Gemini 프롬프트 생성 (beds, hpid, distanceKm만)
-        String prompt = GeminiEmergencyAdvisorPromptBuilder.buildPrompt(candidates);
+        String prompt = GeminiEmergencyAdvisorPromptBuilder.buildPrompt(candidates, language);
 
         // Gemini API 호출
         Map<String, Object> payload = buildEmergencyRecommendationPayload(prompt);
