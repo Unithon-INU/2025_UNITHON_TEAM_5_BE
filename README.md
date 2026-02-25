@@ -201,7 +201,7 @@ src/main/java/com/curelingo/curelingo/
 | Backend | 권유리 | https://github.com/yuripbong |
 | Backend | 최종민 | https://github.com/jongmine |
 | Frontend | 현승곤 | https://github.com/invalidhuman |
-| Frontend | 변상현 | https://github.com/invalidhuman |
+| Frontend | 변상현 |  |
 
 <br>
 
