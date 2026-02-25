@@ -198,9 +198,10 @@ src/main/java/com/curelingo/curelingo/
 
 | 역할 | 이름 | GitHub |
 |------|------|--------|
-| Backend | - | - |
-| Backend | - | - |
-| Backend | - | - |
+| Backend | 권유리 | https://github.com/yuripbong |
+| Backend | 최종민 | https://github.com/jongmine |
+| Frontend | 현승곤 | https://github.com/invalidhuman |
+| Frontend | 변상현 | https://github.com/invalidhuman |
 
 <br>
 
